@@ -37,46 +37,44 @@
     </g>
   </svg>
 
+  <!-- EMAIL -->
   <div class="email">
     <label>Email Address</label>
     <div class="sec-2">
       <ion-icon name="mail-outline"></ion-icon>
-      <input type="email" placeholder="Username@gmail.com">
+      <input id="email" name="email" type="email" placeholder="Username@gmail.com">
     </div>
   </div>
 
+  <!-- PASSWORD -->
   <div class="password">
     <label>Password</label>
     <div class="sec-2">
       <ion-icon name="lock-closed-outline"></ion-icon>
-      <input type="password" class="pas" placeholder="············">
+      <input id="password" name="password" type="password" class="pas" placeholder="············">
       <ion-icon class="show-hide" name="eye-outline"></ion-icon>
     </div>
   </div>
 
+  <!-- LOGIN BUTTON -->
   <div class="login-dropdown">
-  
-  <button class="login-btn">Login</button>
 
-  <div class="dropdown-content">
-    
-    <!-- USER LOGIN -->
-    <a href="{{ url_for('user') }}">
-      <button type="button" class="option-btn">
-        User Login
-      </button>
-    </a>
+    <button class="login-btn" type="button" onclick="login()">Login</button>
 
-    <!-- RECRUITER LOGIN -->
-    <a href="{{ url_for('recruiter') }}">
-      <button type="button" class="option-btn recruiter">
-        Recruiter Login
-      </button>
-    </a>
+    <div class="dropdown-content">
+
+      <a href="{{ url_for('user') }}">
+        <button type="button" class="option-btn">User Login</button>
+      </a>
+
+      <a href="{{ url_for('recruiter') }}">
+        <button type="button" class="option-btn recruiter">Recruiter Login</button>
+      </a>
+
+    </div>
 
   </div>
 
-</div>
   <div class="footer">
     <span>Signup</span>
     <span>Forgot Password?</span>
@@ -84,5 +82,27 @@
 
 </div>
 
+<!-- JS LOGIN LOGIC -->
+<script>
+function login() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  fetch("/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ email, password })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.redirect) {
+      window.location.href = data.redirect;
+    }
+  });
+}
+</script>
+
 </body>
-</html> 
+</html>

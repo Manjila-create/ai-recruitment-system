@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      background: #f4f6f9;
+      display: flex;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 250px;
+      height: 100vh;
+      background: #1f2937;
+      color: white;
+      padding: 20px;
+      position: fixed;
+    }
+
+    .sidebar h2 {
+      margin-bottom: 30px;
+      font-size: 22px;
+      color: #38bdf8;
+    }
+
+    .sidebar a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      padding: 12px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      transition: 0.3s;
+    }
+
+    .sidebar a:hover {
+      background: #374151;
+    }
+
+    /* MAIN CONTENT */
+    .main {
+      margin-left: 250px;
+      padding: 20px;
+      width: 100%;
+    }
+
+    .header {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 {
+      font-size: 24px;
+    }
+
+    .logout {
+      background: #ef4444;
+      color: white;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    /* CARDS */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+      color: #374151;
+    }
+
+    .card p {
+      font-size: 22px;
+      font-weight: bold;
+      color: #111827;
+    }
+
+    /* TABLE */
+    .table-section {
+      margin-top: 30px;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #e5e7eb;
+      text-align: left;
+    }
+
+    th {
+      background: #f3f4f6;
+    }
+
+    .status {
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 12px;
+    }
+
+    .active {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <h2>Admin Panel</h2>
+    <a href="#">Dashboard</a>
+    <a href="#">Users</a>
+    <a href="#">Recruiters</a>
+    <a href="#">Jobs</a>
+    <a href="#">Settings</a>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <div class="header">
+      <h1>Welcome Admin 👑</h1>
+      <button class="logout" onclick="logout()">Logout</button>
+    </div>
+
+    <!-- CARDS -->
+    <div class="cards">
+
+      <div class="card">
+        <h3>Total Users</h3>
+        <p>120</p>
+      </div>
+
+      <div class="card">
+        <h3>Recruiters</h3>
+        <p>35</p>
+      </div>
+
+      <div class="card">
+        <h3>Active Jobs</h3>
+        <p>18</p>
+      </div>
+
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-section">
+      <h2>Recent Users</h2>
+
+      <table>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Status</th>
+        </tr>
+
+        <tr>
+          <td>John Doe</td>
+          <td>john@gmail.com</td>
+          <td><span class="status active">Active</span></td>
+        </tr>
+
+        <tr>
+          <td>Jane Smith</td>
+          <td>jane@gmail.com</td>
+          <td><span class="status active">Active</span></td>
+        </tr>
+
+      </table>
+    </div>
+
+  </div>
+
+  <script>
+    function logout() {
+      window.location.href = "/";
+    }
+  </script>
+
+</body>
+</html>
