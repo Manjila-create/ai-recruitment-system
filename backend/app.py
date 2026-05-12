@@ -10,5 +10,9 @@ def login():
 def user():
     return render_template('user.html')
 
+@app.route('/recruiter')
+def recruiter():
+    return render_template('recruiter.html')
+
 if __name__ == '__main__':
     app.run(debug=True)

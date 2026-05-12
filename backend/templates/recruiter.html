@@ -1,0 +1,1 @@
+<h1>Recruiter Dashboard</h1>

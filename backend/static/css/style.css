@@ -85,6 +85,65 @@ ion-icon {
   font-weight: 600;
   cursor: pointer;
 }
+/* LOGIN DROPDOWN */
+
+.login-dropdown{
+  position: relative;
+  width: 100%;
+}
+
+.login-btn{
+  padding: 1em;
+  background: #2d6cdf;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  width: 100%;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.login-btn:hover{
+  background: #1f56b8;
+}
+
+/* hidden initially */
+.dropdown-content{
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* show when hovering */
+.login-dropdown:hover .dropdown-content{
+  display: flex;
+}
+
+.option-btn{
+  width: 100%;
+  padding: 0.9em;
+  border: none;
+  border-radius: 20px;
+  background: #4CAF50;
+  color: white;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.option-btn:hover{
+  transform: scale(1.02);
+}
+
+.recruiter{
+  background: #ff6b35;
+}
+
+a{
+  text-decoration: none;
+}
 
 .footer {
   display: flex;

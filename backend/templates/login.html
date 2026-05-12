@@ -26,61 +26,57 @@
     <g transform="matrix(3.31 0 0 3.31 320.4 240.4)">
       <circle cx="0" cy="0" r="40"></circle>
     </g>
-
     <g transform="matrix(0.98 0 0 0.98 268.7 213.7)">
       <circle cx="0" cy="0" r="40"></circle>
     </g>
-
     <g transform="matrix(1.01 0 0 1.01 362.9 210.9)">
       <circle cx="0" cy="0" r="40"></circle>
     </g>
-
     <g transform="matrix(0.92 0 0 0.92 318.5 286.5)">
       <circle cx="0" cy="0" r="40"></circle>
     </g>
   </svg>
 
-  <!-- FORM START -->
-  <form action="/user" method="GET">
-
-    <div class="email">
-      <label>Email Address</label>
-
-      <div class="sec-2">
-        <ion-icon name="mail-outline"></ion-icon>
-
-        <input
-          type="email"
-          placeholder="Username@gmail.com"
-          required
-        >
-      </div>
+  <div class="email">
+    <label>Email Address</label>
+    <div class="sec-2">
+      <ion-icon name="mail-outline"></ion-icon>
+      <input type="email" placeholder="Username@gmail.com">
     </div>
+  </div>
 
-    <div class="password">
-      <label>Password</label>
-
-      <div class="sec-2">
-        <ion-icon name="lock-closed-outline"></ion-icon>
-
-        <input
-          type="password"
-          class="pas"
-          placeholder="············"
-          required
-        >
-
-        <ion-icon class="show-hide" name="eye-outline"></ion-icon>
-      </div>
+  <div class="password">
+    <label>Password</label>
+    <div class="sec-2">
+      <ion-icon name="lock-closed-outline"></ion-icon>
+      <input type="password" class="pas" placeholder="············">
+      <ion-icon class="show-hide" name="eye-outline"></ion-icon>
     </div>
+  </div>
 
-    <button class="login" type="submit">
-      Login
-    </button>
+  <div class="login-dropdown">
+  
+  <button class="login-btn">Login</button>
 
-  </form>
-  <!-- FORM END -->
+  <div class="dropdown-content">
+    
+    <!-- USER LOGIN -->
+    <a href="{{ url_for('user') }}">
+      <button type="button" class="option-btn">
+        User Login
+      </button>
+    </a>
 
+    <!-- RECRUITER LOGIN -->
+    <a href="{{ url_for('recruiter') }}">
+      <button type="button" class="option-btn recruiter">
+        Recruiter Login
+      </button>
+    </a>
+
+  </div>
+
+</div>
   <div class="footer">
     <span>Signup</span>
     <span>Forgot Password?</span>
@@ -89,4 +85,4 @@
 </div>
 
 </body>
-</html>
+</html> 
