@@ -59,48 +59,55 @@
   <!-- LOGIN BUTTON -->
   <div class="login-dropdown">
 
-    <button class="login-btn" type="button" onclick="login()">Login</button>
+  <button type="button" class="option-btn" onclick="login('user')">
+    User Login
+  </button>
 
-    <div class="dropdown-content">
+  <button type="button" class="option-btn recruiter" onclick="login('recruiter')">
+    Recruiter Login
+  </button>
 
-      <a href="{{ url_for('user') }}">
-        <button type="button" class="option-btn">User Login</button>
-      </a>
+</div>
 
-      <a href="{{ url_for('recruiter') }}">
-        <button type="button" class="option-btn recruiter">Recruiter Login</button>
-      </a>
-
-    </div>
-
-  </div>
-
-  <div class="footer">
-    <span>Signup</span>
-    <span>Forgot Password?</span>
-  </div>
+ <div class="footer">
+  <a href="{{ url_for('signup') }}">Signup</a>
+  <span>Forgot Password?</span>
+</div>
 
 </div>
 
 <!-- JS LOGIN LOGIC -->
 <script>
-function login() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+function login(role) {
+
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  if (!email || !password) {
+    alert("Enter email and password first");
+    return;
+  }
 
   fetch("/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({ email, password })
+    body: JSON.stringify({
+      email,
+      password,
+      role
+    })
   })
   .then(res => res.json())
   .then(data => {
-    if (data.redirect) {
+    if (data.success) {
       window.location.href = data.redirect;
+    } else {
+      alert(data.message);
     }
   });
+
 }
 </script>
 

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Signup</title>
+
+  <style>
+
+    body{
+      font-family: Arial;
+      background:#f1f5f9;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height:100vh;
+    }
+
+    .box{
+      background:white;
+      padding:40px;
+      border-radius:20px;
+      width:350px;
+      box-shadow:0 0 20px rgba(0,0,0,0.1);
+    }
+
+    input, select{
+      width:100%;
+      padding:12px;
+      margin-top:10px;
+      border-radius:10px;
+      border:1px solid #ccc;
+    }
+
+    button{
+      width:100%;
+      padding:12px;
+      margin-top:20px;
+      border:none;
+      border-radius:10px;
+      background:#2563eb;
+      color:white;
+      cursor:pointer;
+      font-size:16px;
+    }
+
+  </style>
+
+</head>
+<body>
+
+<div class="box">
+
+  <h2>Signup</h2>
+
+  <input type="text" id="fullname" placeholder="Full Name">
+
+  <input type="email" id="email" placeholder="Email">
+
+  <input type="password" id="password" placeholder="Password">
+
+  <select id="role">
+    <option value="user">Signup as User</option>
+    <option value="recruiter">Signup as Recruiter</option>
+  </select>
+
+  <button onclick="register()">Create Account</button>
+
+</div>
+
+<script>
+
+function register(){
+
+  const fullname = document.getElementById("fullname").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const role = document.getElementById("role").value;
+
+  // =========================
+  // VALIDATION
+  // =========================
+
+  // FULL NAME
+  if(fullname === ""){
+    alert("Full name is required");
+    return;
+  }
+
+  // EMAIL
+  const emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+
+  if(!email.match(emailPattern)){
+    alert("Enter valid email");
+    return;
+  }
+
+  // PASSWORD
+  if(password.length < 6){
+    alert("Password must be at least 6 characters");
+    return;
+  }
+
+  // =========================
+  // SEND DATA
+  // =========================
+
+  fetch("/register", {
+
+    method:"POST",
+
+    headers:{
+      "Content-Type":"application/json"
+    },
+
+    body:JSON.stringify({
+      fullname,
+      email,
+      password,
+      role
+    })
+
+  })
+
+  .then(res => res.json())
+
+  .then(data => {
+
+    alert(data.message);
+
+    if(data.success){
+
+      window.location.href = "/";
+
+    }
+
+  });
+
+}
+
+</script>
+
+</body>
+</html>
