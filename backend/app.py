@@ -11,9 +11,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-
+# =========================
 # USER TABLE
-
+# =========================
 class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
@@ -25,9 +25,9 @@ class User(db.Model):
     password = db.Column(db.String(100), nullable=False)
 
 
-
+# =========================
 # RECRUITER TABLE
-
+# =========================
 class Recruiter(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
@@ -43,25 +43,25 @@ with app.app_context():
     db.create_all()
 
 
-
+# =========================
 # HOME PAGE
-
+# =========================
 @app.route('/')
 def home():
     return render_template('login.html')
 
 
-
+# =========================
 # SIGNUP PAGE
-
+# =========================
 @app.route('/signup')
 def signup():
     return render_template('signup.html')
 
 
-
+# =========================
 # REGISTER USER
-
+# =========================
 @app.route('/register', methods=['POST'])
 def register():
 
@@ -72,9 +72,9 @@ def register():
     password = data.get("password")
     role = data.get("role")
 
-   
+    # =========================
     # USER REGISTRATION
- 
+    # =========================
     if role == "user":
 
         existing_user = User.query.filter_by(email=email).first()
@@ -100,9 +100,9 @@ def register():
         })
 
 
-   
+    # =========================
     # RECRUITER REGISTRATION
- 
+    # =========================
     elif role == "recruiter":
 
         existing_recruiter = Recruiter.query.filter_by(email=email).first()
@@ -133,8 +133,9 @@ def register():
     })
 
 
+# =========================
 # LOGIN
-
+# =========================
 @app.route('/login', methods=['POST'])
 def login():
 
@@ -144,9 +145,9 @@ def login():
     password = data.get("password")
     role = data.get("role")
 
-
+    # =========================
     # ADMIN LOGIN
-    
+    # =========================
     if email == "mangila.adhikari111@gmail.com" and password == "1234":
 
         session["role"] = "admin"
@@ -156,9 +157,9 @@ def login():
             "redirect": url_for("admin")
         })
 
-   
+    # =========================
     # USER LOGIN
-   
+    # =========================
     if role == "user":
 
         user = User.query.filter_by(
@@ -175,9 +176,9 @@ def login():
                 "redirect": url_for("user")
             })
 
-    
+    # =========================
     # RECRUITER LOGIN
-    
+    # =========================
     elif role == "recruiter":
 
         recruiter = Recruiter.query.filter_by(
@@ -199,9 +200,9 @@ def login():
         "message": "Invalid credentials"
     })
 
-
+# =========================
 # PAGES
-
+# =========================
 @app.route('/admin')
 def admin():
     return render_template("admin.html")
@@ -217,8 +218,8 @@ def recruiter():
     return render_template("recruiter.html")
 
 
-
+# =========================
 # RUN APP
-
+# =========================
 if __name__ == "__main__":
     app.run(debug=True)
