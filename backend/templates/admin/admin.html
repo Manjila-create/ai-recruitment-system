@@ -147,7 +147,7 @@
   <div class="sidebar">
     <h2>Admin Panel</h2>
     <a href="#">Dashboard</a>
-    <a href="#">Users</a>
+    <a href="/userbutton">Users</a>
     <a href="#">Recruiters</a>
     <a href="#">Jobs</a>
     <a href="#">Settings</a>
@@ -185,35 +185,55 @@
     <div class="table-section">
       <h2>Recent Users</h2>
 
-      <table>
-        <tr>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Status</th>
-        </tr>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Type</th>
+    </tr>
+  </thead>
 
-        <tr>
-          <td>John Doe</td>
-          <td>john@gmail.com</td>
-          <td><span class="status active">Active</span></td>
-        </tr>
-
-        <tr>
-          <td>Jane Smith</td>
-          <td>jane@gmail.com</td>
-          <td><span class="status active">Active</span></td>
-        </tr>
-
-      </table>
-    </div>
+  <tbody id="usersTable"></tbody>
+</table>
 
   </div>
 
-  <script>
-    function logout() {
-      window.location.href = "/";
-    }
-  </script>
+<script>
 
+function loadUsers() {
+
+  console.log("🔥 Users button clicked");
+
+  fetch("/api/recent-users")
+    .then(res => {
+      console.log("📡 Response received");
+      return res.json();
+    })
+    .then(data => {
+
+      console.log("📦 Data:", data);
+
+      const table = document.getElementById("usersTable");
+
+      table.innerHTML = "";
+
+      data.forEach(item => {
+        table.innerHTML += `
+          <tr>
+            <td>${item.name}</td>
+            <td>${item.email}</td>
+            <td>${item.type}</td>
+          </tr>
+        `;
+      });
+
+    })
+    .catch(err => {
+      console.error("❌ ERROR:", err);
+    });
+}
+
+</script>
 </body>
 </html>

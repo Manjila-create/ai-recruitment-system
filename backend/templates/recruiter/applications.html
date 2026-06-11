@@ -1,0 +1,16 @@
+<h1>Applications</h1>
+
+{% for app, user, job in data %}
+
+<div style="border:1px solid black; margin:10px; padding:10px;">
+
+    <h3>{{ job.title }}</h3>
+
+    <p>Name: {{ user.fullname }}</p>
+    <p>Email: {{ user.email }}</p>
+
+    <p>Status: {{ app.status }}</p>
+
+</div>
+
+{% endfor %}

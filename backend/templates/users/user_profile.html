@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Profile</title>
+</head>
+
+<body>
+
+    <h1>My Profile</h1>
+
+    <p><strong>Full Name:</strong> {{ user.fullname }}</p>
+
+    <p><strong>Email:</strong> {{ user.email }}</p>
+
+    <p><strong>Member Since:</strong> {{ user.created_at.strftime('%d %B %Y') }}</p>
+
+    <br>
+
+    <a href="/user">
+        Back to Dashboard
+    </a>
+
+</body>
+</html>
