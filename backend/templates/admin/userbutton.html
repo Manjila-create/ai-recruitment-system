@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>All Users</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      background: #f4f6f9;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 10px 15px;
+      background: #1f2937;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-bottom: 15px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background: #1f2937;
+      color: white;
+    }
+
+    .badge-user {
+      color: green;
+      font-weight: bold;
+    }
+
+    .badge-recruiter {
+      color: blue;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Registered Users & Recruiters</h1>
+
+  <button onclick="loadUsers()">Refresh Data</button>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Type</th>
+        <th>Joined</th>
+      </tr>
+    </thead>
+
+    <tbody id="usersTable"></tbody>
+  </table>
+
+<script>
+
+function loadUsers() {
+
+  fetch("/api/recent-users")
+    .then(res => res.json())
+    .then(data => {
+
+      const table = document.getElementById("usersTable");
+      table.innerHTML = "";
+
+      data.forEach(user => {
+
+        let typeBadge = user.type === "User"
+          ? `<span class="badge-user">User</span>`
+          : `<span class="badge-recruiter">Recruiter</span>`;
+
+        table.innerHTML += `
+          <tr>
+            <td>${user.name}</td>
+            <td>${user.email}</td>
+            <td>${typeBadge}</td>
+            <td>${new Date(user.created_at).toLocaleString()}</td>
+          </tr>
+        `;
+      });
+
+    })
+    .catch(err => console.error("Error:", err));
+}
+
+// auto-load on page open
+loadUsers();
+
+</script>
+
+</body>
+</html>
