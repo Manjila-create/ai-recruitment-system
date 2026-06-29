@@ -1,8 +1,15 @@
-<h1>Candidates</h1>
+<h1>All Registered Candidates</h1>
 
 {% for user in users %}
+
 <div style="border:1px solid #ccc; margin:10px; padding:10px;">
-    <h3>{{ user.fullname }}</h3>
+    <h3>
+        <a href="/candidate/{{ user.id }}">
+            {{ user.fullname }}
+        </a>
+    </h3>
+
     <p>{{ user.email }}</p>
 </div>
+
 {% endfor %}

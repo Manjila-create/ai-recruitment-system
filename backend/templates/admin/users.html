@@ -57,10 +57,7 @@
 
 <body>
 
-  <h1>Registered Users & Recruiters</h1>
-
-  <button onclick="loadUsers()">Refresh Data</button>
-
+  <h1>Registered Users</h1>
   <table>
     <thead>
       <tr>
@@ -71,44 +68,18 @@
       </tr>
     </thead>
 
-    <tbody id="usersTable"></tbody>
+    <tbody>
+
+{% for user in users %}
+<tr>
+    <td>{{ user.fullname }}</td>
+    <td>{{ user.email }}</td>
+    <td><span class="badge-user">User</span></td>
+    <td>{{ user.created_at.strftime("%d-%m-%Y %H:%M") }}</td>
+</tr>
+{% endfor %}
+
+</tbody>
   </table>
-
-<script>
-
-function loadUsers() {
-
-  fetch("/api/recent-users")
-    .then(res => res.json())
-    .then(data => {
-
-      const table = document.getElementById("usersTable");
-      table.innerHTML = "";
-
-      data.forEach(user => {
-
-        let typeBadge = user.type === "User"
-          ? `<span class="badge-user">User</span>`
-          : `<span class="badge-recruiter">Recruiter</span>`;
-
-        table.innerHTML += `
-          <tr>
-            <td>${user.name}</td>
-            <td>${user.email}</td>
-            <td>${typeBadge}</td>
-            <td>${new Date(user.created_at).toLocaleString()}</td>
-          </tr>
-        `;
-      });
-
-    })
-    .catch(err => console.error("Error:", err));
-}
-
-// auto-load on page open
-loadUsers();
-
-</script>
-
 </body>
 </html>

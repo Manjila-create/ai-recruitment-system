@@ -116,6 +116,16 @@ body{
     margin-bottom:15px;
 }
 
+.clickable {
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.clickable:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
 .post-btn{
     background:#2563eb;
     color:white;
@@ -163,24 +173,24 @@ body{
 
         <div class="cards">
 
-            <div class="card">
+            <div class="card clickable" onclick="window.location.href='/posted-jobs'">
                 <h3>Total Jobs</h3>
                 <p>{{ total_jobs }}</p>
             </div>
 
-            <div class="card">
+            <div class="card clickable" onclick="window.location.href='/applications'">
                 <h3>Applications</h3>
                 <p>{{ total_applications }}</p>
             </div>
 
-            <div class="card">
+            <div class="card clickable" onclick="window.location.href='/shortlisted'">
                 <h3>Shortlisted</h3>
-                <p>18</p>
+                <p>{{ shortlisted_count }}</p>
             </div>
 
-            <div class="card">
+            <div class="card clickable" onclick="window.location.href='/interviews'">
                 <h3>Interviews</h3>
-                <p>7</p>
+                 <p>{{ interview_count }}</p>
             </div>
 
         </div>

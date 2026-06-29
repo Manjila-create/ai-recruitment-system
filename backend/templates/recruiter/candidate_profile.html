@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Candidate Profile</title>
+</head>
+<body>
+
+<h1>Candidate Profile</h1>
+
+<p><strong>Name:</strong> {{ user.fullname }}</p>
+
+<p><strong>Email:</strong> {{ user.email }}</p>
+
+{% if user.resume %}
+<p>
+    <a href="{{ url_for('static',
+        filename='resumes/' + user.resume) }}"
+        target="_blank">
+        View Resume
+    </a>
+</p>
+{% else %}
+<p>No resume uploaded.</p>
+{% endif %}
+
+<a href="/candidates">Back to Candidates</a>
+
+</body>
+</html>

@@ -1,0 +1,38 @@
+<h1>Shortlisted Candidates</h1>
+
+{% for app, user, job in data %}
+
+<div style="border:1px solid black; margin:10px; padding:10px;">
+
+    <h3>
+        <a href="/candidate/{{ user.id }}">
+            {{ user.fullname }}
+        </a>
+    </h3>
+
+    <p>Email: {{ user.email }}</p>
+    <p>Applied For: {{ job.title }}</p>
+    <p>Company: {{ job.company }}</p>
+
+    {% if app.resume %}
+        <p>
+            <a href="{{ url_for('static', filename='resumes/' + app.resume) }}"
+               target="_blank">
+                View Resume
+            </a>
+        </p>
+    {% endif %}
+
+    {% if app.interview_status == "Scheduled" %}
+        <button disabled>Interview Scheduled</button>
+    {% else %}
+        <form action="/schedule-interview/{{ app.id }}" method="POST">
+            <button type="submit">
+                Schedule Interview
+            </button>
+        </form>
+    {% endif %}
+
+</div>
+
+{% endfor %}

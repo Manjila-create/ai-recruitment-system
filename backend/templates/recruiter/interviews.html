@@ -1,0 +1,19 @@
+<h1>Interview Candidates</h1>
+
+{% for app, user, job in data %}
+
+<div style="border:1px solid black; margin:10px; padding:10px;">
+
+    <h3>
+        <a href="/candidate/{{ user.id }}">
+            {{ user.fullname }}
+        </a>
+    </h3>
+
+    <p>Email: {{ user.email }}</p>
+    <p>Position: {{ job.title }}</p>
+    <p>Company: {{ job.company }}</p>
+
+</div>
+
+{% endfor %}

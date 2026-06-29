@@ -140,14 +140,13 @@
 
   </style>
 </head>
-
 <body>
 
   <!-- SIDEBAR -->
   <div class="sidebar">
     <h2>Admin Panel</h2>
     <a href="#">Dashboard</a>
-    <a href="/userbutton">Users</a>
+    <a href="/users">Users</a>
     <a href="#">Recruiters</a>
     <a href="#">Jobs</a>
     <a href="#">Settings</a>
@@ -164,45 +163,36 @@
     <!-- CARDS -->
     <div class="cards">
 
-      <div class="card">
-        <h3>Total Users</h3>
-        <p>120</p>
+      <div class="card" onclick="window.location.href='/users'" style="cursor:pointer;">
+    <h3>Total Users</h3>
+    <p>{{ total_users }}</p>
       </div>
 
-      <div class="card">
+      <div class="card" onclick="window.location.href='/recruiters'" style="cursor:pointer;">
         <h3>Recruiters</h3>
-        <p>35</p>
+        <p>{{ total_recruiters }}</p>
       </div>
 
-      <div class="card">
+      <div class="card" onclick="window.location.href='/admin-jobs'" style="cursor:pointer;">
         <h3>Active Jobs</h3>
-        <p>18</p>
+        <p>{{ total_jobs }}</p>
       </div>
-
     </div>
 
     <!-- TABLE -->
     <div class="table-section">
       <h2>Recent Users</h2>
-
-<table>
-  <thead>
-    <tr>
+<table><thead><tr>
       <th>Name</th>
       <th>Email</th>
       <th>Type</th>
-    </tr>
-  </thead>
-
-  <tbody id="usersTable"></tbody>
-</table>
-
+    </tr></thead>
+  <tbody id="usersTable"></tbody></table>
   </div>
 
 <script>
 
 function loadUsers() {
-
   console.log("🔥 Users button clicked");
 
   fetch("/api/recent-users")
@@ -211,9 +201,7 @@ function loadUsers() {
       return res.json();
     })
     .then(data => {
-
       console.log("📦 Data:", data);
-
       const table = document.getElementById("usersTable");
 
       table.innerHTML = "";
@@ -223,17 +211,22 @@ function loadUsers() {
           <tr>
             <td>${item.name}</td>
             <td>${item.email}</td>
-            <td>${item.type}</td>
+            <td>${item.type === "User"? '<span style="color:green;font-weight:bold;">User</span>': '<span style="color:blue;font-weight:bold;">Recruiter</span>'}</td>
           </tr>
         `;
       });
-
     })
     .catch(err => {
       console.error("❌ ERROR:", err);
     });
 }
+window.onload = loadUsers;
 
+function logout() {
+    if (confirm("Are you sure you want to logout?")) {
+        window.location.href = "/logout";
+    }
+}
 </script>
 </body>
 </html>

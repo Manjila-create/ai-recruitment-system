@@ -124,7 +124,13 @@
             padding:25px;
             border-radius:18px;
             box-shadow:0 0 15px rgba(0,0,0,0.08);
+            transition:0.3s;
+             cursor:pointer;
         }
+
+.stat-card:hover{
+    transform:translateY(-5px);
+}
 
         .stat-card h3{
             color:#3e4684;
@@ -246,7 +252,7 @@
             <li><a href="/jobs">💼 Browse Jobs</a></li>
             <li><a href="/my-applications">📄 My Applications</a></li>
             <li><a href="/resume">📁 Resume</a></li>
-            <li><a href="/interviews">🎤 Interviews</a></li>
+            <li><a href="/my-interviews">🎤 Interviews</a></li>
             <li><a href="/notifications">🔔 Notifications</a></li>
             <li><a href="/user-profile">👤 Profile</a></li>
             <li><a href="/">🚪 Logout</a></li>
@@ -286,12 +292,14 @@
 
             <div class="stats">
 
-                <div class="stat-card">
+                <div class="stat-card"
+                    onclick="window.location.href='/my-applications'"
+                    style="cursor:pointer;">
                     <h3>Jobs Applied</h3>
                     <h1 id="jobsApplied">0</h1>
                 </div>
 
-                <div class="stat-card">
+                <div class="stat-card" onclick="window.location.href='/my-interviews'"style="cursor:pointer;">
                     <h3>Interviews</h3>
                     <h1 id="interviews">0</h1>
                 </div>
@@ -334,7 +342,7 @@
                     <h3>Interview Schedule</h3>
                     <p>Check upcoming interview dates and meeting links.</p>
 
-                    <button onclick="window.location.href='/interviews'">
+                    <button onclick="window.location.href='/my-interviews'">
                         View Interviews
                     </button>
                 </div>
@@ -353,7 +361,6 @@
             <!-- RECENT APPLICATIONS -->
 
             <div class="table-section">
-
                 <h2>Recent Applications</h2>
 
                 <table>
@@ -362,11 +369,9 @@
         <th>Role</th>
         <th>Status</th>
     </tr>
-
     <tbody id="appTable"></tbody>
 </table>
             </div>
-
         </div>
 
     </div>

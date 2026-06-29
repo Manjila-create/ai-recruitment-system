@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Resume</title>
+
+    <style>
+
+        body{
+            font-family:Poppins,sans-serif;
+            background:#eef2ff;
+            padding:50px;
+        }
+
+        .box{
+            max-width:700px;
+            margin:auto;
+            background:white;
+            padding:30px;
+            border-radius:15px;
+            box-shadow:0 0 15px rgba(0,0,0,.1);
+        }
+
+        h2{
+            color:#3e4684;
+            margin-bottom:20px;
+        }
+
+        button{
+            background:#3e4684;
+            color:white;
+            border:none;
+            padding:10px 20px;
+            border-radius:10px;
+            cursor:pointer;
+        }
+
+        a{
+            color:#3e4684;
+            font-weight:bold;
+        }
+
+    </style>
+
+</head>
+<body>
+
+<div class="box">
+
+    <h2>Upload Resume</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+
+        <input
+            type="file"
+            name="resume"
+            accept=".pdf"
+            required
+        >
+
+        <br><br>
+
+        <button type="submit">
+            Upload
+        </button>
+
+    </form>
+
+    <hr><br>
+
+    {% if user.resume %}
+
+        <h3>Current Resume</h3>
+
+        <a
+            href="{{ url_for('static', filename='resumes/' + user.resume) }}"
+            target="_blank">
+
+            View Resume
+
+        </a>
+
+    {% else %}
+
+        <p>No resume uploaded yet.</p>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>

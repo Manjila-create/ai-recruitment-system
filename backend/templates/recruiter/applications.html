@@ -1,16 +1,65 @@
-<h1>Applications</h1>
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+
+    <h1>Applications Received</h1>
+
+    <a href="/logout">
+        <button style="
+            background:#3e4684;
+            color:white;
+            border:none;
+            padding:10px 20px;
+            border-radius:6px;
+            cursor:pointer;">
+            Logout
+        </button>
+    </a>
+
+</div>
 
 {% for app, user, job in data %}
 
 <div style="border:1px solid black; margin:10px; padding:10px;">
-
-    <h3>{{ job.title }}</h3>
-
-    <p>Name: {{ user.fullname }}</p>
+    <h3>{{ user.fullname }} applied for {{ job.title }}</h3>
     <p>Email: {{ user.email }}</p>
-
+    <p>Company: {{ job.company }}</p>
     <p>Status: {{ app.status }}</p>
+    <p>Match Score: {{ app.similarity_score }}%</p>
+    <p>
+Recommendation:
 
+{% if app.similarity_score >= 90 %}
+    ⭐ Excellent Match
+
+{% elif app.similarity_score >= 75 %}
+    ✅ Good Match
+
+{% elif app.similarity_score >= 60 %}
+    ⚠ Fair Match
+
+{% else %}
+    ❌ Low Match
+
+{% endif %}
+</p>
+    
+    {% if app.resume %}
+        <p>
+            <a href="{{ url_for('static', filename='resumes/' + app.resume) }}" target="_blank">
+                View CV
+            </a>
+        </p>
+    {% else %}
+        <p>No CV uploaded</p>
+    {% endif %}
+
+    <form action="/update-application/{{ app.id }}" method="POST">
+        <select name="status">
+            <option>Pending</option>
+            <option>Shortlisted</option>
+            <option>Rejected</option>
+        </select>
+        <button type="submit">Update</button>
+    </form>
 </div>
 
 {% endfor %}

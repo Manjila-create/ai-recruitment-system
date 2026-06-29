@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>My Posted Jobs</title>
+
+<style>
+
+body{
+
+font-family:Poppins,sans-serif;
+background:#eef2ff;
+padding:40px;
+
+}
+
+.job{
+
+background:white;
+padding:20px;
+margin-bottom:20px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,.1);
+
+}
+
+button{
+
+padding:10px 20px;
+margin-right:10px;
+cursor:pointer;
+border:none;
+border-radius:6px;
+
+}
+
+.edit{
+
+background:#2563eb;
+color:white;
+
+}
+
+.delete{
+
+background:#dc2626;
+color:white;
+
+}
+</style>
+
+</head>
+
+<body>
+
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+
+    <h1>My Posted Jobs</h1>
+
+    <a href="/logout">
+        <button class="logout">Logout</button>
+    </a>
+
+</div>
+
+{% for job in jobs %}
+
+<div class="job">
+
+<h2>{{ job.title }}</h2>
+
+<p><b>Company:</b> {{ job.company }}</p>
+
+<p><b>Location:</b> {{ job.location }}</p>
+
+<p><b>Salary:</b> {{ job.salary }}</p>
+
+<p>{{ job.description }}</p>
+
+<a href="/edit-job/{{ job.id }}">
+
+<button class="edit">
+
+Edit
+
+</button>
+
+</a>
+
+<form
+action="/delete-job/{{ job.id }}"
+method="POST"
+style="display:inline;">
+
+<button
+class="delete"
+onclick="return confirm('Delete this job?')">
+
+Delete
+
+</button>
+
+</form>
+
+</div>
+
+{% endfor %}
+
+</body>
+</html>
