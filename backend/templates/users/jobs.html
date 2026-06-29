@@ -1,39 +1,109 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
 <title>Browse Jobs</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Poppins",sans-serif;
+}
+
+body{
+    background:#0b0f1a;
+    color:white;
+    padding:40px;
+}
+
+h1{
+    margin-bottom:30px;
+    color:#60a5fa;
+}
+
+.job-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:20px;
+}
+
+.job-card{
+    background:rgba(255,255,255,0.06);
+    backdrop-filter:blur(20px);
+    border-radius:15px;
+    padding:20px;
+    border:1px solid rgba(255,255,255,0.08);
+    transition:0.3s;
+}
+
+.job-card:hover{
+    transform:translateY(-5px);
+    border-color:#60a5fa;
+}
+
+.job-card h2{
+    color:#93c5fd;
+    margin-bottom:10px;
+}
+
+.job-card p{
+    color:rgba(255,255,255,0.7);
+    margin:5px 0;
+}
+
+button{
+    margin-top:10px;
+    padding:10px 15px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.apply-btn{
+    background:#3b82f6;
+    color:white;
+}
+
+.applied-btn{
+    background:green;
+    color:white;
+    cursor:not-allowed;
+}
+
+</style>
 </head>
+
 <body>
 
 <h1>Available Jobs</h1>
 
+<div class="job-grid">
+
 {% for job in jobs %}
 
-<div style="border:1px solid #ccc; padding:10px; margin:10px;">
-    
+<div class="job-card">
+
     <h2>{{ job.title }}</h2>
 
     <p><b>Company:</b> {{ job.company }}</p>
-
     <p><b>Location:</b> {{ job.location }}</p>
-
     <p><b>Salary:</b> {{ job.salary }}</p>
-
     <p>{{ job.description }}</p>
 
     {% if job.id in applied_jobs %}
 
-        <button disabled
-                style="background:green;color:white;padding:8px 15px;border:none;">
-            Applied
-        </button>
+        <button class="applied-btn" disabled>Applied</button>
 
     {% else %}
 
         <form action="/apply/{{ job.id }}" method="POST">
-            <button type="submit">
-                Apply
-            </button>
+            <button class="apply-btn" type="submit">Apply</button>
         </form>
 
     {% endif %}
@@ -41,6 +111,8 @@
 </div>
 
 {% endfor %}
+
+</div>
 
 </body>
 </html>

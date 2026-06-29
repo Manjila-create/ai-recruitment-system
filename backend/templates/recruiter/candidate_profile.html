@@ -1,29 +1,160 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Candidate Profile</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Candidate Profile</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Poppins",sans-serif;
+}
+
+body{
+    background:#0b0f1a;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    overflow:hidden;
+}
+
+/* Animated Background */
+
+.bg{
+    position:fixed;
+    inset:0;
+    background:
+        radial-gradient(circle at 20% 20%, #6366f1 0%, transparent 40%),
+        radial-gradient(circle at 80% 30%, #22d3ee 0%, transparent 40%),
+        radial-gradient(circle at 50% 80%, #a855f7 0%, transparent 40%);
+    filter:blur(90px);
+    animation:move 12s infinite alternate;
+    z-index:-1;
+}
+
+@keyframes move{
+    0%{transform:translate(0,0);}
+    100%{transform:translate(40px,-30px);}
+}
+
+/* Card */
+
+.card{
+    width:450px;
+    background:rgba(255,255,255,0.06);
+    backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:22px;
+    padding:35px;
+    box-shadow:0 0 30px rgba(0,0,0,.35);
+}
+
+.card h1{
+    text-align:center;
+    margin-bottom:30px;
+    color:#60a5fa;
+}
+
+.info{
+    margin-bottom:18px;
+    font-size:16px;
+}
+
+.info strong{
+    color:#93c5fd;
+}
+
+.resume-btn,
+.back-btn{
+    display:block;
+    width:100%;
+    text-align:center;
+    text-decoration:none;
+    padding:13px;
+    border-radius:12px;
+    font-weight:600;
+    margin-top:18px;
+    transition:.3s;
+}
+
+.resume-btn{
+    background:linear-gradient(90deg,#3b82f6,#8b5cf6);
+    color:white;
+}
+
+.resume-btn:hover{
+    transform:translateY(-3px);
+    filter:brightness(1.1);
+}
+
+.back-btn{
+    background:rgba(255,255,255,0.08);
+    color:white;
+}
+
+.back-btn:hover{
+    background:rgba(255,255,255,0.15);
+}
+
+.no-resume{
+    text-align:center;
+    color:#fca5a5;
+    margin-top:15px;
+}
+
+</style>
+
 </head>
 <body>
 
-<h1>Candidate Profile</h1>
+<div class="bg"></div>
 
-<p><strong>Name:</strong> {{ user.fullname }}</p>
+<div class="card">
 
-<p><strong>Email:</strong> {{ user.email }}</p>
+    <h1>Candidate Profile</h1>
 
-{% if user.resume %}
-<p>
-    <a href="{{ url_for('static',
-        filename='resumes/' + user.resume) }}"
-        target="_blank">
-        View Resume
+    <div class="info">
+        <strong>Name:</strong><br>
+        {{ user.fullname }}
+    </div>
+
+    <div class="info">
+        <strong>Email:</strong><br>
+        {{ user.email }}
+    </div>
+
+    {% if user.resume %}
+
+    <a class="resume-btn"
+       href="{{ url_for('static', filename='resumes/' + user.resume) }}"
+       target="_blank">
+
+        📄 View Resume
+
     </a>
-</p>
-{% else %}
-<p>No resume uploaded.</p>
-{% endif %}
 
-<a href="/candidates">Back to Candidates</a>
+    {% else %}
+
+    <p class="no-resume">
+        No resume uploaded.
+    </p>
+
+    {% endif %}
+
+    <a href="/candidates" class="back-btn">
+        ← Back to Candidates
+    </a>
+
+</div>
 
 </body>
 </html>

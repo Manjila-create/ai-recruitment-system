@@ -1,13 +1,98 @@
-<h1>All Recruiters</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>All Recruiters</title>
 
-{% for recruiter in recruiters %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<div style="border:1px solid #ccc; margin:10px; padding:10px;">
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
 
+body {
+  background: #f4f6f9;
+  padding: 20px;
+}
+
+/* HEADER */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+h1 {
+  color: #1f2937;
+}
+
+/* BUTTON */
+button {
+  padding: 10px 15px;
+  background: #1f2937;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+/* CARD */
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  transition: 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.card h3 {
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+.card p {
+  color: #6b7280;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <h1>All Recruiters</h1>
+
+  <button onclick="window.location.href='/admin'">
+    Back
+  </button>
+</div>
+
+<div class="grid">
+
+  {% for recruiter in recruiters %}
+  <div class="card">
     <h3>{{ recruiter.fullname }}</h3>
-
     <p>{{ recruiter.email }}</p>
+  </div>
+  {% endfor %}
 
 </div>
 
-{% endfor %}
+</body>
+</html>

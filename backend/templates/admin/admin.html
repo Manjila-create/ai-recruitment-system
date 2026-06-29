@@ -1,209 +1,229 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Admin Dashboard</title>
+<meta charset="UTF-8">
+<title>Admin Dashboard</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Poppins", sans-serif;
-    }
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:"Poppins",sans-serif;
+}
 
-    body {
-      background: #f4f6f9;
-      display: flex;
-    }
+body{
+  background:#0b0f1a;
+  display:flex;
+  color:white;
+  overflow:hidden;
+}
 
-    /* SIDEBAR */
-    .sidebar {
-      width: 250px;
-      height: 100vh;
-      background: #1f2937;
-      color: white;
-      padding: 20px;
-      position: fixed;
-    }
+/* BACKGROUND GLOW */
+.bg{
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:
+    radial-gradient(circle at 20% 20%, #6366f1 0%, transparent 40%),
+    radial-gradient(circle at 80% 30%, #22d3ee 0%, transparent 40%),
+    radial-gradient(circle at 50% 80%, #a855f7 0%, transparent 40%);
+  filter: blur(90px);
+  animation: move 12s infinite alternate;
+  z-index:-1;
+}
 
-    .sidebar h2 {
-      margin-bottom: 30px;
-      font-size: 22px;
-      color: #38bdf8;
-    }
+@keyframes move{
+  0%{transform:translate(0,0);}
+  100%{transform:translate(40px,-30px);}
+}
 
-    .sidebar a {
-      display: block;
-      color: white;
-      text-decoration: none;
-      padding: 12px;
-      margin-bottom: 10px;
-      border-radius: 6px;
-      transition: 0.3s;
-    }
+/* SIDEBAR */
+.sidebar{
+  width:250px;
+  height:100vh;
+  background:rgba(255,255,255,0.06);
+  backdrop-filter:blur(20px);
+  border-right:1px solid rgba(255,255,255,0.08);
+  padding:20px;
+  position:fixed;
+}
 
-    .sidebar a:hover {
-      background: #374151;
-    }
+.sidebar h2{
+  color:#60a5fa;
+  margin-bottom:30px;
+}
 
-    /* MAIN CONTENT */
-    .main {
-      margin-left: 250px;
-      padding: 20px;
-      width: 100%;
-    }
+.sidebar a{
+  display:block;
+  padding:12px;
+  color:white;
+  text-decoration:none;
+  border-radius:10px;
+  transition:0.3s;
+}
 
-    .header {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+.sidebar a:hover{
+  background:rgba(255,255,255,0.1);
+  transform:translateX(5px);
+}
 
-    .header h1 {
-      font-size: 24px;
-    }
+/* MAIN */
+.main{
+  margin-left:250px;
+  width:100%;
+  padding:20px;
+}
 
-    .logout {
-      background: #ef4444;
-      color: white;
-      padding: 8px 15px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
+/* HEADER */
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:20px;
+  margin-bottom:20px;
+  background:rgba(255,255,255,0.06);
+  backdrop-filter:blur(20px);
+  border-radius:12px;
+}
 
-    /* CARDS */
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-    }
+.header h1{
+  color:white;
+}
 
-    .card {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-    }
+.logout{
+  background:#ef4444;
+  color:white;
+  border:none;
+  padding:8px 15px;
+  border-radius:8px;
+  cursor:pointer;
+}
 
-    .card h3 {
-      margin-bottom: 10px;
-      color: #374151;
-    }
+/* CARDS */
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:20px;
+}
 
-    .card p {
-      font-size: 22px;
-      font-weight: bold;
-      color: #111827;
-    }
+.card{
+  background:rgba(255,255,255,0.06);
+  backdrop-filter:blur(20px);
+  padding:20px;
+  border-radius:12px;
+  cursor:pointer;
+  transition:0.3s;
+  border:1px solid rgba(255,255,255,0.08);
+}
 
-    /* TABLE */
-    .table-section {
-      margin-top: 30px;
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-    }
+.card:hover{
+  transform:translateY(-5px);
+  box-shadow:0 0 25px rgba(99,102,241,0.3);
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+.card h3{
+  color:#93c5fd;
+}
 
-    th, td {
-      padding: 12px;
-      border-bottom: 1px solid #e5e7eb;
-      text-align: left;
-    }
+.card p{
+  font-size:24px;
+  font-weight:bold;
+}
 
-    th {
-      background: #f3f4f6;
-    }
+/* TABLE */
+.table-section{
+  margin-top:30px;
+  background:rgba(255,255,255,0.06);
+  backdrop-filter:blur(20px);
+  padding:20px;
+  border-radius:12px;
+}
 
-    .status {
-      padding: 5px 10px;
-      border-radius: 5px;
-      font-size: 12px;
-    }
+table{
+  width:100%;
+  border-collapse:collapse;
+  color:white;
+}
 
-    .active {
-      background: #dcfce7;
-      color: #16a34a;
-    }
+th,td{
+  padding:12px;
+  border-bottom:1px solid rgba(255,255,255,0.1);
+}
 
-  </style>
+th{
+  background:rgba(255,255,255,0.08);
+}
+
+</style>
 </head>
+
 <body>
 
-  <!-- SIDEBAR -->
-  <div class="sidebar">
-    <h2>Admin Panel</h2>
-    <a href="#">Dashboard</a>
-    <a href="/users">Users</a>
-    <a href="#">Recruiters</a>
-    <a href="#">Jobs</a>
-    <a href="#">Settings</a>
+<div class="bg"></div>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <h2>Admin Panel</h2>
+  <a href="#">Dashboard</a>
+  <a href="/users">Users</a>
+  <a href="/recruiters">Recruiters</a>
+  <a href="/admin-jobs">Jobs</a>
+  <a href="#">Settings</a>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <div class="header">
+    <h1>Welcome Admin 👑</h1>
+    <button class="logout" onclick="logout()">Logout</button>
   </div>
 
-  <!-- MAIN -->
-  <div class="main">
+  <div class="cards">
 
-    <div class="header">
-      <h1>Welcome Admin 👑</h1>
-      <button class="logout" onclick="logout()">Logout</button>
+    <div class="card" onclick="window.location.href='/users'">
+      <h3>Total Users</h3>
+      <p>{{ total_users }}</p>
     </div>
 
-    <!-- CARDS -->
-    <div class="cards">
-
-      <div class="card" onclick="window.location.href='/users'" style="cursor:pointer;">
-    <h3>Total Users</h3>
-    <p>{{ total_users }}</p>
-      </div>
-
-      <div class="card" onclick="window.location.href='/recruiters'" style="cursor:pointer;">
-        <h3>Recruiters</h3>
-        <p>{{ total_recruiters }}</p>
-      </div>
-
-      <div class="card" onclick="window.location.href='/admin-jobs'" style="cursor:pointer;">
-        <h3>Active Jobs</h3>
-        <p>{{ total_jobs }}</p>
-      </div>
+    <div class="card" onclick="window.location.href='/recruiters'">
+      <h3>Recruiters</h3>
+      <p>{{ total_recruiters }}</p>
     </div>
 
-    <!-- TABLE -->
-    <div class="table-section">
-      <h2>Recent Users</h2>
-<table><thead><tr>
-      <th>Name</th>
-      <th>Email</th>
-      <th>Type</th>
-    </tr></thead>
-  <tbody id="usersTable"></tbody></table>
+    <div class="card" onclick="window.location.href='/admin-jobs'">
+      <h3>Active Jobs</h3>
+      <p>{{ total_jobs }}</p>
+    </div>
+
   </div>
+
+  <div class="table-section">
+    <h2>Recent Users</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Type</th>
+        </tr>
+      </thead>
+      <tbody id="usersTable"></tbody>
+    </table>
+  </div>
+
+</div>
 
 <script>
-
 function loadUsers() {
-  console.log("🔥 Users button clicked");
-
   fetch("/api/recent-users")
-    .then(res => {
-      console.log("📡 Response received");
-      return res.json();
-    })
+    .then(res => res.json())
     .then(data => {
-      console.log("📦 Data:", data);
       const table = document.getElementById("usersTable");
-
       table.innerHTML = "";
 
       data.forEach(item => {
@@ -211,22 +231,21 @@ function loadUsers() {
           <tr>
             <td>${item.name}</td>
             <td>${item.email}</td>
-            <td>${item.type === "User"? '<span style="color:green;font-weight:bold;">User</span>': '<span style="color:blue;font-weight:bold;">Recruiter</span>'}</td>
+            <td>${item.type}</td>
           </tr>
         `;
       });
-    })
-    .catch(err => {
-      console.error("❌ ERROR:", err);
     });
 }
+
 window.onload = loadUsers;
 
 function logout() {
-    if (confirm("Are you sure you want to logout?")) {
-        window.location.href = "/logout";
-    }
+  if(confirm("Are you sure you want to logout?")){
+    window.location.href="/logout";
+  }
 }
 </script>
+
 </body>
 </html>

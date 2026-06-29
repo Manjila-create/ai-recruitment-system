@@ -1,65 +1,256 @@
-<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Applications Received</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#0b0f1a;
+    color:white;
+}
+
+.bg{
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:
+        radial-gradient(circle at 20% 20%, #6366f1 0%, transparent 40%),
+        radial-gradient(circle at 80% 30%, #22d3ee 0%, transparent 40%),
+        radial-gradient(circle at 50% 80%, #a855f7 0%, transparent 40%);
+    filter:blur(90px);
+    animation:move 12s infinite alternate;
+    z-index:-1;
+}
+
+@keyframes move{
+    from{transform:translate(0,0);}
+    to{transform:translate(40px,-30px);}
+}
+
+.container{
+    width:90%;
+    max-width:1200px;
+    margin:40px auto;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:30px;
+}
+
+.header h1{
+    color:#fff;
+}
+
+.logout-btn{
+    background:#ef4444;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:600;
+    transition:.3s;
+}
+
+.logout-btn:hover{
+    background:#dc2626;
+}
+
+.application{
+    background:rgba(255,255,255,0.06);
+    backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:20px;
+    padding:25px;
+    margin-bottom:25px;
+    transition:.3s;
+}
+
+.application:hover{
+    transform:translateY(-5px);
+    box-shadow:0 0 25px rgba(96,165,250,.2);
+}
+
+.application h2{
+    color:#60a5fa;
+    margin-bottom:15px;
+}
+
+.application p{
+    margin:8px 0;
+    color:#d1d5db;
+}
+
+.score{
+    color:#22c55e;
+    font-weight:600;
+}
+
+.tag{
+    display:inline-block;
+    margin-top:8px;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:14px;
+    font-weight:600;
+}
+
+.excellent{
+    background:#16a34a;
+}
+
+.good{
+    background:#2563eb;
+}
+
+.fair{
+    background:#f59e0b;
+}
+
+.low{
+    background:#dc2626;
+}
+
+.actions{
+    margin-top:20px;
+    display:flex;
+    gap:15px;
+    align-items:center;
+    flex-wrap:wrap;
+}
+
+.actions a{
+    text-decoration:none;
+}
+
+.cv-btn,
+.update-btn{
+    border:none;
+    padding:10px 18px;
+    border-radius:10px;
+    cursor:pointer;
+    color:white;
+    font-weight:600;
+}
+
+.cv-btn{
+    background:#3b82f6;
+}
+
+.cv-btn:hover{
+    background:#2563eb;
+}
+
+.update-btn{
+    background:#22c55e;
+}
+
+.update-btn:hover{
+    background:#16a34a;
+}
+
+select{
+    padding:10px;
+    border-radius:10px;
+    border:none;
+    outline:none;
+}
+</style>
+
+</head>
+<body>
+
+<div class="bg"></div>
+
+<div class="container">
+
+<div class="header">
     <h1>Applications Received</h1>
 
     <a href="/logout">
-        <button style="
-            background:#3e4684;
-            color:white;
-            border:none;
-            padding:10px 20px;
-            border-radius:6px;
-            cursor:pointer;">
+        <button class="logout-btn">
             Logout
         </button>
     </a>
-
 </div>
 
 {% for app, user, job in data %}
 
-<div style="border:1px solid black; margin:10px; padding:10px;">
-    <h3>{{ user.fullname }} applied for {{ job.title }}</h3>
-    <p>Email: {{ user.email }}</p>
-    <p>Company: {{ job.company }}</p>
-    <p>Status: {{ app.status }}</p>
-    <p>Match Score: {{ app.similarity_score }}%</p>
-    <p>
-Recommendation:
+<div class="application">
 
-{% if app.similarity_score >= 90 %}
-    ⭐ Excellent Match
+    <h2>{{ user.fullname }}</h2>
 
-{% elif app.similarity_score >= 75 %}
-    ✅ Good Match
+    <p><strong>Applied For:</strong> {{ job.title }}</p>
 
-{% elif app.similarity_score >= 60 %}
-    ⚠ Fair Match
+    <p><strong>Company:</strong> {{ job.company }}</p>
 
-{% else %}
-    ❌ Low Match
+    <p><strong>Email:</strong> {{ user.email }}</p>
 
-{% endif %}
-</p>
-    
-    {% if app.resume %}
-        <p>
-            <a href="{{ url_for('static', filename='resumes/' + app.resume) }}" target="_blank">
-                View CV
-            </a>
-        </p>
+    <p><strong>Status:</strong> {{ app.status }}</p>
+
+    <p class="score"><strong>AI Match Score:</strong> {{ app.similarity_score }}%</p>
+
+    <p><strong>Recommendation:</strong></p>
+
+    {% if app.similarity_score >= 90 %}
+        <span class="tag excellent">⭐ Excellent Match</span>
+
+    {% elif app.similarity_score >= 75 %}
+        <span class="tag good">✅ Good Match</span>
+
+    {% elif app.similarity_score >= 60 %}
+        <span class="tag fair">⚠ Fair Match</span>
+
     {% else %}
-        <p>No CV uploaded</p>
+        <span class="tag low">❌ Low Match</span>
+
     {% endif %}
 
-    <form action="/update-application/{{ app.id }}" method="POST">
-        <select name="status">
-            <option>Pending</option>
-            <option>Shortlisted</option>
-            <option>Rejected</option>
-        </select>
-        <button type="submit">Update</button>
-    </form>
+    <div class="actions">
+
+        {% if app.resume %}
+        <a href="{{ url_for('static', filename='resumes/' + app.resume) }}" target="_blank">
+            <button class="cv-btn">View CV</button>
+        </a>
+        {% else %}
+        <span>No CV Uploaded</span>
+        {% endif %}
+
+        <form action="/update-application/{{ app.id }}" method="POST">
+
+            <select name="status">
+                <option {% if app.status=="Pending" %}selected{% endif %}>Pending</option>
+                <option {% if app.status=="Shortlisted" %}selected{% endif %}>Shortlisted</option>
+                <option {% if app.status=="Rejected" %}selected{% endif %}>Rejected</option>
+            </select>
+
+            <button type="submit" class="update-btn">
+                Update Status
+            </button>
+
+        </form>
+
+    </div>
+
 </div>
 
 {% endfor %}
+
+</div>
+
+</body>
+</html>

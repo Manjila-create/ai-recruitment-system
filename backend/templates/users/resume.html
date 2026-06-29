@@ -1,47 +1,84 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Resume</title>
+<meta charset="UTF-8">
+<title>Resume Upload</title>
 
-    <style>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-        body{
-            font-family:Poppins,sans-serif;
-            background:#eef2ff;
-            padding:50px;
-        }
+<style>
 
-        .box{
-            max-width:700px;
-            margin:auto;
-            background:white;
-            padding:30px;
-            border-radius:15px;
-            box-shadow:0 0 15px rgba(0,0,0,.1);
-        }
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Poppins",sans-serif;
+}
 
-        h2{
-            color:#3e4684;
-            margin-bottom:20px;
-        }
+body{
+    background:#0b0f1a;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
 
-        button{
-            background:#3e4684;
-            color:white;
-            border:none;
-            padding:10px 20px;
-            border-radius:10px;
-            cursor:pointer;
-        }
+.box{
+    width:500px;
+    background:rgba(255,255,255,0.06);
+    backdrop-filter:blur(20px);
+    padding:30px;
+    border-radius:20px;
+    border:1px solid rgba(255,255,255,0.08);
+}
 
-        a{
-            color:#3e4684;
-            font-weight:bold;
-        }
+h2{
+    color:#60a5fa;
+    margin-bottom:20px;
+}
 
-    </style>
+input[type="file"]{
+    width:100%;
+    padding:10px;
+    background:rgba(255,255,255,0.05);
+    border-radius:10px;
+    color:white;
+}
 
+button{
+    margin-top:15px;
+    width:100%;
+    padding:10px;
+    border:none;
+    border-radius:10px;
+    background:#3b82f6;
+    color:white;
+    font-weight:600;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#2563eb;
+}
+
+a{
+    color:#93c5fd;
+    font-weight:600;
+}
+
+hr{
+    margin:20px 0;
+    border:1px solid rgba(255,255,255,0.1);
+}
+
+p{
+    color:rgba(255,255,255,0.7);
+}
+
+</style>
 </head>
+
 <body>
 
 <div class="box">
@@ -50,33 +87,20 @@
 
     <form method="POST" enctype="multipart/form-data">
 
-        <input
-            type="file"
-            name="resume"
-            accept=".pdf"
-            required
-        >
+        <input type="file" name="resume" accept=".pdf" required>
 
-        <br><br>
-
-        <button type="submit">
-            Upload
-        </button>
+        <button type="submit">Upload</button>
 
     </form>
 
-    <hr><br>
+    <hr>
 
     {% if user.resume %}
 
-        <h3>Current Resume</h3>
+        <p><b>Current Resume:</b></p>
 
-        <a
-            href="{{ url_for('static', filename='resumes/' + user.resume) }}"
-            target="_blank">
-
+        <a href="{{ url_for('static', filename='resumes/' + user.resume) }}" target="_blank">
             View Resume
-
         </a>
 
     {% else %}

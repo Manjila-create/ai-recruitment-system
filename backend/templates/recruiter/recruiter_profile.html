@@ -2,18 +2,101 @@
 <html>
 <head>
     <title>Recruiter Profile</title>
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Poppins, sans-serif;
+        }
+
+        body{
+            background:#0b0f1a;
+            padding:40px;
+            color:white;
+            overflow:hidden;
+        }
+
+        /* background glow */
+        .bg{
+            position:fixed;
+            width:100%;
+            height:100%;
+            background:
+                radial-gradient(circle at 20% 20%, #6366f1 0%, transparent 40%),
+                radial-gradient(circle at 80% 30%, #22d3ee 0%, transparent 40%),
+                radial-gradient(circle at 50% 80%, #a855f7 0%, transparent 40%);
+            filter: blur(90px);
+            animation: move 12s infinite alternate;
+            z-index:-1;
+        }
+
+        @keyframes move{
+            0%{transform:translate(0,0);}
+            100%{transform:translate(40px,-30px);}
+        }
+
+        .box{
+            max-width:600px;
+            margin:auto;
+            background:rgba(255,255,255,0.06);
+            backdrop-filter:blur(20px);
+            padding:25px;
+            border-radius:16px;
+            border:1px solid rgba(255,255,255,0.08);
+            box-shadow:0 0 25px rgba(0,0,0,0.3);
+        }
+
+        h1{
+            margin-bottom:20px;
+            color:#93c5fd;
+        }
+
+        p{
+            margin:10px 0;
+            color:#cbd5e1;
+            font-size:15px;
+        }
+
+        .label{
+            font-weight:600;
+            color:#ffffff;
+        }
+
+        a{
+            display:inline-block;
+            margin-top:20px;
+            text-decoration:none;
+            color:white;
+            background:#2563eb;
+            padding:10px 15px;
+            border-radius:10px;
+            transition:0.3s;
+        }
+
+        a:hover{
+            background:#1d4ed8;
+            transform:translateY(-2px);
+        }
+    </style>
 </head>
+
 <body>
 
+<div class="bg"></div>
+
+<div class="box">
+
     <h1>Recruiter Profile</h1>
-    <p><strong>Full Name:</strong> {{ recruiter.fullname }}</p>
-    <p><strong>Email:</strong> {{ recruiter.email }}</p>
 
-    <p><strong>Member Since:</strong> {{ recruiter.created_at.strftime('%d %B %Y') }}</p>
+    <p><span class="label">Full Name:</span> {{ recruiter.fullname }}</p>
+    <p><span class="label">Email:</span> {{ recruiter.email }}</p>
+    <p><span class="label">Member Since:</span> {{ recruiter.created_at.strftime('%d %B %Y') }}</p>
 
-    <br>
-    <a href="/recruiter">
-        Back to Dashboard
-    </a>
+    <a href="/recruiter">← Back to Dashboard</a>
+
+</div>
+
 </body>
 </html>

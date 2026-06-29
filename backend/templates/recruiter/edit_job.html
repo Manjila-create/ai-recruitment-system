@@ -1,96 +1,231 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Edit Job</title>
+<title>Edit Job</title>
 
-    <style>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-        body{
-            font-family:Poppins,sans-serif;
-            background:#eef2ff;
-            padding:40px;
-        }
+<style>
 
-        .box{
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
 
-            width:650px;
-            margin:auto;
-            background:white;
-            padding:30px;
-            border-radius:12px;
-            box-shadow:0 0 10px rgba(0,0,0,.15);
+body{
+    background:#0b0f1a;
+    color:white;
+}
 
-        }
+.bg{
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:
+        radial-gradient(circle at 20% 20%, #6366f1 0%, transparent 40%),
+        radial-gradient(circle at 80% 30%, #22d3ee 0%, transparent 40%),
+        radial-gradient(circle at 50% 80%, #a855f7 0%, transparent 40%);
+    filter:blur(90px);
+    animation:move 12s infinite alternate;
+    z-index:-1;
+}
 
-        input,
-        textarea{
+@keyframes move{
+    from{transform:translate(0,0);}
+    to{transform:translate(40px,-30px);}
+}
 
-            width:100%;
-            padding:10px;
-            margin-bottom:15px;
+.container{
+    width:90%;
+    max-width:800px;
+    margin:50px auto;
+}
 
-        }
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:30px;
+}
 
-        button{
+.header h1{
+    color:white;
+}
 
-            background:#3e4684;
-            color:white;
-            border:none;
-            padding:12px 20px;
-            cursor:pointer;
-            border-radius:8px;
+.logout-btn{
+    background:#ef4444;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:600;
+    transition:.3s;
+}
 
-        }
+.logout-btn:hover{
+    background:#dc2626;
+}
 
-    </style>
+.card{
+    background:rgba(255,255,255,.06);
+    backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:20px;
+    padding:35px;
+    box-shadow:0 0 25px rgba(0,0,0,.35);
+}
+
+.card h2{
+    margin-bottom:25px;
+    color:#60a5fa;
+}
+
+label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:500;
+}
+
+input,
+textarea{
+    width:100%;
+    padding:14px;
+    margin-bottom:20px;
+    border:none;
+    outline:none;
+    border-radius:12px;
+    background:rgba(255,255,255,.08);
+    color:white;
+    font-size:15px;
+}
+
+textarea{
+    resize:vertical;
+}
+
+input::placeholder,
+textarea::placeholder{
+    color:#cbd5e1;
+}
+
+.btn-group{
+    display:flex;
+    gap:15px;
+    margin-top:10px;
+}
+
+.save-btn{
+    background:#22c55e;
+    color:white;
+    border:none;
+    padding:12px 25px;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:15px;
+    font-weight:600;
+    transition:.3s;
+}
+
+.save-btn:hover{
+    background:#16a34a;
+}
+
+.cancel-btn{
+    background:#475569;
+    color:white;
+    text-decoration:none;
+    padding:12px 25px;
+    border-radius:10px;
+    font-weight:600;
+    transition:.3s;
+}
+
+.cancel-btn:hover{
+    background:#334155;
+}
+
+</style>
 
 </head>
-
 <body>
 
-<div class="box">
+<div class="bg"></div>
 
-<h2>Edit Job</h2>
+<div class="container">
+
+<div class="header">
+
+<h1>Edit Job</h1>
+
+<a href="/logout">
+<button class="logout-btn">
+Logout
+</button>
+</a>
+
+</div>
+
+<div class="card">
+
+<h2>Update Job Details</h2>
 
 <form method="POST">
 
+<label>Job Title</label>
 <input
 type="text"
 name="title"
 value="{{ job.title }}"
 required>
 
+<label>Company</label>
 <input
 type="text"
 name="company"
 value="{{ job.company }}"
 required>
 
+<label>Location</label>
 <input
 type="text"
 name="location"
 value="{{ job.location }}"
 required>
 
+<label>Salary</label>
 <input
 type="text"
 name="salary"
 value="{{ job.salary }}"
 required>
 
+<label>Description</label>
 <textarea
 name="description"
 rows="8"
 required>{{ job.description }}</textarea>
 
-<button type="submit">
+<div class="btn-group">
 
-Update Job
-
+<button class="save-btn" type="submit">
+Save Changes
 </button>
 
+<a class="cancel-btn" href="/posted-jobs">
+Cancel
+</a>
+
+</div>
+
 </form>
+
+</div>
 
 </div>
 

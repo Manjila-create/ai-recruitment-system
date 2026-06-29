@@ -1,17 +1,111 @@
-<h1>All Jobs</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>All Jobs</title>
 
-{% for job, recruiter in jobs %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<div style="border:1px solid #ccc; margin:10px; padding:10px;">
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background: #f4f6f9;
+  padding: 20px;
+}
+
+/* HEADER */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+h1 {
+  color: #1f2937;
+}
+
+/* BUTTON */
+button {
+  padding: 10px 15px;
+  background: #1f2937;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+/* CARD */
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  transition: 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.card h3 {
+  color: #1f2937;
+  margin-bottom: 10px;
+}
+
+.card p {
+  color: #6b7280;
+  margin: 5px 0;
+}
+
+.label {
+  font-weight: 600;
+  color: #111827;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <h1>All Jobs</h1>
+
+  <button onclick="window.location.href='/admin'">
+    Back
+  </button>
+</div>
+
+<div class="grid">
+
+  {% for job, recruiter in jobs %}
+  <div class="card">
 
     <h3>{{ job.title }}</h3>
 
-    <p>Company: {{ job.company }}</p>
+    <p><span class="label">Company:</span> {{ job.company }}</p>
 
-    <p>Location: {{ job.location }}</p>
+    <p><span class="label">Location:</span> {{ job.location }}</p>
 
-    <p>Recruiter: {{ recruiter.fullname }}</p>
+    <p><span class="label">Recruiter:</span> {{ recruiter.fullname }}</p>
+
+  </div>
+  {% endfor %}
 
 </div>
 
-{% endfor %}
+</body>
+</html>

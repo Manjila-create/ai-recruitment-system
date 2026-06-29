@@ -1,19 +1,158 @@
-<h1>Interview Candidates</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Interview Candidates</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#0b0f1a;
+    color:white;
+}
+
+.bg{
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:
+        radial-gradient(circle at 20% 20%, #6366f1 0%, transparent 40%),
+        radial-gradient(circle at 80% 30%, #22d3ee 0%, transparent 40%),
+        radial-gradient(circle at 50% 80%, #a855f7 0%, transparent 40%);
+    filter:blur(90px);
+    animation:move 12s infinite alternate;
+    z-index:-1;
+}
+
+@keyframes move{
+    from{transform:translate(0,0);}
+    to{transform:translate(40px,-30px);}
+}
+
+.container{
+    width:90%;
+    max-width:1000px;
+    margin:50px auto;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:30px;
+}
+
+.header h1{
+    color:white;
+}
+
+.logout-btn{
+    background:#ef4444;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.logout-btn:hover{
+    background:#dc2626;
+}
+
+/* CARD */
+.card{
+    background:rgba(255,255,255,0.06);
+    backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:18px;
+    padding:22px;
+    margin-bottom:20px;
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 0 25px rgba(96,165,250,0.2);
+}
+
+.card h2{
+    margin-bottom:10px;
+}
+
+.card a{
+    color:#60a5fa;
+    text-decoration:none;
+}
+
+.card a:hover{
+    text-decoration:underline;
+}
+
+.card p{
+    margin:5px 0;
+    color:#d1d5db;
+}
+
+.badge{
+    display:inline-block;
+    margin-top:10px;
+    padding:6px 12px;
+    border-radius:20px;
+    background:#22c55e;
+    font-size:13px;
+    font-weight:600;
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="bg"></div>
+
+<div class="container">
+
+<div class="header">
+    <h1>Interview Candidates</h1>
+
+    <a href="/logout">
+        <button class="logout-btn">Logout</button>
+    </a>
+</div>
 
 {% for app, user, job in data %}
 
-<div style="border:1px solid black; margin:10px; padding:10px;">
+<div class="card">
 
-    <h3>
+    <h2>
         <a href="/candidate/{{ user.id }}">
             {{ user.fullname }}
         </a>
-    </h3>
+    </h2>
 
-    <p>Email: {{ user.email }}</p>
-    <p>Position: {{ job.title }}</p>
-    <p>Company: {{ job.company }}</p>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>Position:</strong> {{ job.title }}</p>
+    <p><strong>Company:</strong> {{ job.company }}</p>
+
+    <span class="badge">Interview Scheduled</span>
 
 </div>
 
 {% endfor %}
+
+</div>
+
+</body>
+</html>

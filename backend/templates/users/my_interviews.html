@@ -1,35 +1,69 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>My Interviews</title>
+<meta charset="UTF-8">
+<title>My Interviews</title>
 
-    <style>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-        body{
-            font-family:Poppins,sans-serif;
-            background:#f4f6f9;
-            padding:30px;
-        }
+<style>
 
-        .card{
-            background:white;
-            padding:20px;
-            border-radius:12px;
-            margin-bottom:20px;
-            box-shadow:0 3px 10px rgba(0,0,0,.08);
-        }
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Poppins",sans-serif;
+}
 
-        h1{
-            margin-bottom:25px;
-        }
+body{
+    background:#0b0f1a;
+    color:white;
+    padding:40px;
+}
 
-        h2{
-            color:#3e4684;
-        }
+h1{
+    margin-bottom:25px;
+    color:#60a5fa;
+}
 
-    </style>
+.card{
+    background:rgba(255,255,255,0.06);
+    backdrop-filter:blur(20px);
+    border-radius:15px;
+    padding:20px;
+    margin-bottom:20px;
+    border:1px solid rgba(255,255,255,0.08);
+    transition:0.3s;
+}
 
+.card:hover{
+    transform:translateY(-5px);
+    border-color:#60a5fa;
+}
+
+h2{
+    color:#93c5fd;
+    margin-bottom:10px;
+}
+
+p{
+    color:rgba(255,255,255,0.7);
+    margin:5px 0;
+}
+
+.success{
+    margin-top:10px;
+    color:#22c55e;
+    font-weight:600;
+}
+
+.empty{
+    color:rgba(255,255,255,0.6);
+}
+
+</style>
 </head>
+
 <body>
 
 <h1>Scheduled Interviews</h1>
@@ -43,20 +77,14 @@
     <h2>{{ job.title }}</h2>
 
     <p><b>Company:</b> {{ job.company }}</p>
-
     <p><b>Location:</b> {{ job.location }}</p>
-
     <p><b>Salary:</b> {{ job.salary }}</p>
-
     <p><b>Recruiter:</b> {{ recruiter.fullname }}</p>
+    <p><b>Description:</b> {{ job.description }}</p>
 
-    <p><b>Description:</b></p>
-
-    <p>{{ job.description }}</p>
-
-    <p style="color:green;font-weight:bold;">
+    <div class="success">
         ✅ Interview Scheduled
-    </p>
+    </div>
 
 </div>
 
@@ -64,7 +92,7 @@
 
 {% else %}
 
-<h3>No interviews scheduled yet.</h3>
+<p class="empty">No interviews scheduled yet.</p>
 
 {% endif %}
 

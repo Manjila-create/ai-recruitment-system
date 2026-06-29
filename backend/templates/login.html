@@ -1,113 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Recruitment System</title>
+<meta charset="UTF-8">
+<title>AI Recruitment System</title>
 
-  <!-- Icons -->
-  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
-  <!-- Normalize -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
-
-  <!-- Flask CSS -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body>
 
-<div class="screen-1">
+<!-- Animated background -->
+<div class="bg-animation"></div>
 
-  <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480">
-    <g transform="matrix(3.31 0 0 3.31 320.4 240.4)">
-      <circle cx="0" cy="0" r="40"></circle>
-    </g>
-    <g transform="matrix(0.98 0 0 0.98 268.7 213.7)">
-      <circle cx="0" cy="0" r="40"></circle>
-    </g>
-    <g transform="matrix(1.01 0 0 1.01 362.9 210.9)">
-      <circle cx="0" cy="0" r="40"></circle>
-    </g>
-    <g transform="matrix(0.92 0 0 0.92 318.5 286.5)">
-      <circle cx="0" cy="0" r="40"></circle>
-    </g>
-  </svg>
+<div class="main-container">
 
-  <!-- EMAIL -->
-  <div class="email">
-    <label>Email Address</label>
-    <div class="sec-2">
+  <!-- LEFT SIDE BRAND -->
+  <div class="brand-panel">
+    <div class="logo-box">
+      <ion-icon name="hardware-chip-outline"></ion-icon>
+      <h1>AI Recruit</h1>
+    </div>
+
+    <p class="tagline">
+      Smarter hiring powered by AI matching, resume intelligence & automation.
+    </p>
+
+    <div class="floating-cards">
+      <div class="card">⚡ Instant Matching</div>
+      <div class="card">📄 Resume AI Scan</div>
+      <div class="card">🎯 Smart Hiring</div>
+    </div>
+  </div>
+
+  <!-- LOGIN CARD -->
+  <div class="login-card">
+
+    <h2>Welcome Back</h2>
+    <p class="sub">Login to continue your recruitment journey</p>
+
+    <!-- EMAIL -->
+    <div class="input-box">
       <ion-icon name="mail-outline"></ion-icon>
-      <input id="email" name="email" type="email" placeholder="Username@gmail.com">
+      <input id="email" type="email" placeholder="Email address">
     </div>
-  </div>
 
-  <!-- PASSWORD -->
-  <div class="password">
-    <label>Password</label>
-    <div class="sec-2">
+    <!-- PASSWORD -->
+    <div class="input-box">
       <ion-icon name="lock-closed-outline"></ion-icon>
-      <input id="password" name="password" type="password" class="pas" placeholder="············">
-      <ion-icon class="show-hide" name="eye-outline"></ion-icon>
+      <input id="password" type="password" placeholder="Password">
     </div>
+
+    <!-- BUTTONS -->
+    <div class="btn-group">
+      <button onclick="login('user')" class="btn user">User Login</button>
+      <button onclick="login('recruiter')" class="btn recruiter">Recruiter Login</button>
+    </div>
+
+    <div class="links">
+      <a href="{{ url_for('signup') }}">Create Account</a>
+      <span>Forgot password?</span>
+    </div>
+
   </div>
 
-  <!-- LOGIN BUTTON -->
-  <div class="login-dropdown">
-
-  <button type="button" class="option-btn" onclick="login('user')">
-    User Login
-  </button>
-
-  <button type="button" class="option-btn recruiter" onclick="login('recruiter')">
-    Recruiter Login
-  </button>
-
 </div>
 
- <div class="footer">
-  <a href="{{ url_for('signup') }}">Signup</a>
-  <span>Forgot Password?</span>
-</div>
-
-</div>
-
-<!-- JS LOGIN LOGIC -->
 <script>
-function login(role) {
-
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value.trim();
-
-  if (!email || !password) {
-    alert("Enter email and password first");
-    return;
-  }
+function login(role){
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
   fetch("/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      email,
-      password,
-      role
-    })
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({email,password,role})
   })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      window.location.href = data.redirect;
-    } else {
-      alert(data.message);
-    }
+  .then(r=>r.json())
+  .then(d=>{
+    if(d.success) window.location.href = d.redirect;
+    else alert(d.message);
   });
-
 }
 </script>
 
