@@ -217,3 +217,14 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Ignore database files
+instance/*.db
+
+# Ignore uploaded files and static assets
+static/profile_pic/
+static/profile_pics/
+static/resumes/
+
+.vscode/
+*.log

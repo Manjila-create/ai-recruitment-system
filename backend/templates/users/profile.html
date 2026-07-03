@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>My Profile</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Poppins",sans-serif;
+}
+
+body{
+
+    background:#081221;
+    color:white;
+    min-height:100vh;
+}
+
+/*=============================
+BACKGROUND
+=============================*/
+
+.top-banner{
+    height:220px;
+    background:linear-gradient(135deg,#2563eb,#0f172a);
+}
+
+/*=============================
+MAIN CONTAINER
+=============================*/
+.container{
+    width:95%;
+    max-width:1200px;
+    margin:auto;
+    margin-top:-120px;
+}
+
+/*=============================
+PROFILE CARD
+=============================*/
+
+.profile-card{
+    background:#111827;
+    border-radius:22px;
+    overflow:hidden;
+    box-shadow:0 20px 45px rgba(0,0,0,.45);
+}
+
+/*=============================
+HEADER
+=============================*/
+.profile-header{
+    padding:35px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.profile-left{
+    display:flex;
+    align-items:center;
+    gap:25px;
+}
+
+.profile-pic{
+    width:150px;
+    height:150px;
+    border-radius:50%;
+    object-fit:cover;
+    border:5px solid #3b82f6;
+    background:#1f2937;
+}
+
+.default-avatar{
+    width:150px;
+    height:150px;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:60px;
+    font-weight:700;
+    background:#2563eb;
+    border:5px solid #3b82f6;
+}
+.user-details h1{
+    font-size:34px;
+}
+.user-details h3{
+    margin-top:8px;
+    color:#60a5fa;
+    font-weight:500;
+}
+.user-details p{
+    margin-top:8px;
+    color:#b6c2d2;
+}
+.upload-btn{
+    display:inline-block;
+    margin-top:18px;
+    padding:10px 20px;
+    border-radius:12px;
+    background:#2563eb;
+    color:white;
+    text-decoration:none;
+    transition:.3s;
+}
+.upload-btn:hover{
+    background:#1d4ed8;
+}
+/*=============================
+BUTTONS
+=============================*/
+.header-buttons{
+    display:flex;
+    gap:15px;
+}
+.btn{
+    padding:13px 22px;
+    border-radius:12px;
+    text-decoration:none;
+    font-weight:600;
+    transition:.3s;
+}
+.edit-btn{
+    background:#3b82f6;
+    color:white;
+}
+.edit-btn:hover{
+    background:#2563eb;
+}
+.dashboard-btn{
+    background:#374151;
+    color:white;
+}
+.dashboard-btn:hover{
+    background:#4b5563;
+}
+/*=============================
+BODY
+=============================*/
+.content{
+    padding:35px;
+}
+.section{
+    margin-bottom:45px;
+}
+.section h2{
+    color:#60a5fa;
+    margin-bottom:25px;
+    font-size:24px;
+}
+/*=============================
+INFO GRID
+=============================*/
+.info-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:22px;
+}
+.info-box{
+    background:#182233;
+    padding:18px;
+    border-radius:15px;
+}
+
+.info-box span{
+    display:block;
+    color:#93c5fd;
+    margin-bottom:8px;
+    font-size:14px;
+}
+.info-box h4{
+    font-weight:500;
+    word-break:break-word;
+}
+.info-grid a{
+    display:inline-block;
+    margin-top:10px;
+}
+.btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px rgba(0,0,0,.3);
+}
+.info-box{
+    transition:0.25s ease;
+}
+.info-box:hover{
+    transform:translateY(-4px);
+    background:#1f2a3d;
+}
+.profile-card{
+    animation:fadeIn 0.5s ease;
+}
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+/* MOBILE RESPONSIVE */
+@media (max-width: 900px){
+.profile-header{
+    flex-direction:column;
+    gap:20px;
+    align-items:center;
+    text-align:center;
+}
+.profile-left{
+    flex-direction:column;
+}
+.info-grid{
+    grid-template-columns:1fr;
+}
+.container{
+    margin-top:-80px;
+}
+}
+</style></head>
+<body>
+<div class="top-banner"></div>
+<div class="container">
+<div class="profile-card">
+<div class="profile-header">
+<div class="profile-left">
+
+{% if user.profile_pic != "default.png" %}
+
+<img
+src="{{ url_for('static', filename='profile_pics/' + user.profile_pic) }}"
+class="profile-pic">
+
+{% else %}
+<div class="default-avatar">
+{{ user.fullname[0]|upper }}
+</div>
+
+{% endif %}
+<div class="user-details">
+<h1>{{ user.fullname }}</h1>
+<h3>
+
+{% if user.headline %}
+{{ user.headline }}
+{% else %}
+Computer Science Student
+{% endif %}
+
+</h3>
+<p>Candidate Profile</p>
+<a href="/edit-profile" class="upload-btn">📷 Upload / Change Photo</a>
+</div></div>
+
+<div class="header-buttons">
+<a href="/edit-profile" class="btn edit-btn">Edit Profile</a>
+<a href="/user" class="btn dashboard-btn">Dashboard</a>
+
+</div></div>
+<div class="content">
+<div class="section">
+
+<h2>Personal Information</h2>
+
+<div class="info-grid">
+<div class="info-box">
+<span>Full Name</span>
+
+<h4>{{ user.fullname }}</h4>
+</div>
+<div class="info-box">
+<span>Email</span>
+
+<h4>{{ user.email }}</h4>
+</div>
+<div class="info-box">
+<span>Phone Number</span>
+<h4>
+
+{{ user.phone or "Not Added" }}
+
+</h4></div>
+<div class="info-box">
+<span>Location</span>
+<h4>
+{{ user.location or "Not Added" }}
+
+</h4>
+</div>
+<div class="info-box">
+<span>Date of Birth</span>
+
+<h4>
+
+{% if user.dob %}
+
+{{ user.dob.strftime('%d %B %Y') }}
+
+{% else %}
+
+Not Added
+
+{% endif %}
+
+</h4>
+</div>
+<div class="info-box">
+<span>Member Since</span>
+<h4>
+
+{{ user.created_at.strftime('%d %B %Y') }}
+
+</h4>
+</div></div></div>
+
+<!-- =============================
+PROFESSIONAL INFORMATION
+============================= -->
+
+<div class="section">
+<h2>Professional Information</h2>
+<div class="info-grid">
+<div class="info-box">
+<span>Headline</span>
+<h4>{{ user.headline or "Not Added" }}</h4>
+</div>
+
+<div class="info-box">
+<span>Skills</span>
+<h4>
+{% if user.skills %}
+{{ user.skills }}
+{% else %}
+Not Added
+{% endif %}
+</h4>
+</div>
+
+<div class="info-box">
+<span>Education</span>
+<h4>
+{{ user.education or "Not Added" }}
+</h4>
+</div>
+
+<div class="info-box">
+<span>Experience</span>
+<h4>
+{{ user.experience or "Fresher" }}
+</h4>
+</div></div></div>
+
+<!-- =============================
+DOCUMENTS SECTION
+============================= -->
+<div class="section">
+<h2>Documents</h2>
+<div class="info-grid">
+<div class="info-box">
+<span>Resume</span>
+
+<h4>
+{% if user.resume %}
+Uploaded ✔
+{% else %}
+Not Uploaded
+{% endif %}
+</h4>
+<a href="/resume" style="display:inline-block;margin-top:12px;padding:10px 16px;
+background:#2563eb;color:white;border-radius:10px;text-decoration:none;font-weight:600;">Replace Resume</a>
+
+</div></div></div>
+<!-- =============================
+BOTTOM ACTION BAR
+============================= -->
+
+<div class="section">
+<div style="
+display:flex;
+gap:15px;
+flex-wrap:wrap;
+justify-content:center;
+margin-top:20px;
+">
+<a href="/edit-profile" class="btn edit-btn">Save / Edit Profile</a>
+<a href="/resume" class="btn dashboard-btn">Replace Resume</a>
+<a href="/user" class="btn dashboard-btn">Back to Dashboard</a>
+</div></div>
+</div> <!-- content end -->
+</div> <!-- profile-card end -->
+</div> <!-- container end -->
+<!-- =============================
+FOOTER STYLE DECORATION
+============================= -->
+<div style="
+text-align:center;
+color:#64748b;
+margin:30px 0;
+font-size:13px;
+">AI Recruitment System • Candidate Portal</div>
+
+</body>
+</html>

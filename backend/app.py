@@ -6,6 +6,7 @@ from werkzeug.utils import secure_filename
 from pdfminer.high_level import extract_text
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from PIL import Image
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
@@ -14,6 +15,10 @@ app.secret_key = "supersecretkey"
 UPLOAD_FOLDER = "static/resumes"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+# PROFILE PICTURE UPLOAD
+PROFILE_FOLDER = "static/profile_pics"
+app.config["PROFILE_FOLDER"] = PROFILE_FOLDER
+os.makedirs(PROFILE_FOLDER, exist_ok=True)
 
 # DATABASE
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///recruitment.db'
@@ -25,11 +30,25 @@ db = SQLAlchemy(app)
 # =========================
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+
     fullname = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
+
+    profile_pic = db.Column(db.String(200),default="profile_pics/default.png")
+
+    phone = db.Column(db.String(20))
+    location = db.Column(db.String(100))
+    dob = db.Column(db.Date)
+
+    headline = db.Column(db.String(150))
+    skills = db.Column(db.Text)
+    education = db.Column(db.Text)
+    experience = db.Column(db.Text)
+
     resume = db.Column(db.String(255))
     resume_text = db.Column(db.Text)
+
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 # =========================
@@ -51,8 +70,12 @@ class Application(db.Model):
     resume = db.Column(db.String(255))
     status = db.Column(db.String(50), default="Pending")
     similarity_score = db.Column(db.Float, default=0.0)
+    match_label = db.Column(db.String(50))
+    
     interview_status = db.Column(db.String(20),default="Not Scheduled")
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
 # =========================
 # JOB TABLE
 # =========================
@@ -82,28 +105,33 @@ def extract_pdf_text(filepath):
 
 def calculate_similarity(resume_text, job_text):
     if not resume_text or not job_text:
-        return 0
+        return 0.0
+
+    resume_text = resume_text.lower()
+    job_text = job_text.lower()
 
     docs = [resume_text, job_text]
-    tfidf = TfidfVectorizer(stop_words="english")
+
+    tfidf = TfidfVectorizer(
+        stop_words="english",
+        ngram_range=(1, 2),   # IMPROVES matching
+        max_features=5000
+    )
+
     matrix = tfidf.fit_transform(docs)
+
     score = cosine_similarity(matrix[0:1], matrix[1:2])[0][0]
 
-    return round(score * 100, 2)
-def get_recommendation(score):
-    if score >= 90:
-        return "⭐ Excellent Match"
-    elif score >= 75:
-        return "✅ Good Match"
-    elif score >= 60:
-        return "⚠ Fair Match"
-    else:
-        return "❌ Low Match"
+    return round(float(score * 100), 2)
 
 # CREATE DB
 with app.app_context():
     db.create_all()
-
+#------------------------------------------------------------------------------
+ALLOWED_IMAGE_EXTENSIONS = {"png", "jpg", "jpeg"}
+def allowed_image(filename):
+    return ("." in filename
+        and filename.rsplit(".",1)[1].lower() in ALLOWED_IMAGE_EXTENSIONS)
 # =========================
 # HOME
 # =========================
@@ -125,7 +153,6 @@ def signup():
 def register():
 
     data = request.get_json()
-
     fullname = data.get("fullname")
     email = data.get("email")
     password = data.get("password")
@@ -150,7 +177,6 @@ def register():
         db.session.commit()
 
         return jsonify({"success": True, "message": "Recruiter registered"})
-
     return jsonify({"success": False, "message": "Invalid role"})
 
 # =========================
@@ -163,7 +189,6 @@ def login():
     email = data.get("email")
     password = data.get("password")
     role = data.get("role")
-
 
     # ADMIN
     if email == "mangila.adhikari111@gmail.com" and password == "1234":
@@ -244,23 +269,15 @@ def interviews():
 
     recruiter_id = session.get("recruiter_id")
 
-    data = db.session.query(
-        Application,
-        User,
-        Job
-    ).join(
-        User, Application.user_id == User.id
-    ).join(
-        Job, Application.job_id == Job.id
-    ).filter(
+    data = db.session.query(Application,
+        User,Job).join(
+        User, Application.user_id == User.id).join(
+        Job, Application.job_id == Job.id).filter(
         Job.recruiter_id == recruiter_id,
-        Application.interview_status == "Scheduled"
-    ).all()
+        Application.interview_status == "Scheduled").all()
 
     return render_template(
-        "recruiter/interviews.html",
-        data=data
-    )
+        "recruiter/interviews.html",data=data)
 
 @app.route("/recruiter-profile")
 def recruiter_profile():
@@ -274,25 +291,16 @@ def recruiter_profile():
 
 @app.route("/jobs")
 def jobs():
-
     jobs = Job.query.all()
-
     applied_jobs = []
-
     if "user_id" in session:
-
         user_id = session["user_id"]
 
-        applied_jobs = [
-            app.job_id
-            for app in Application.query.filter_by(user_id=user_id).all()
-        ]
+        applied_jobs = [app.job_id
+            for app in Application.query.filter_by(user_id=user_id).all()]
 
-    return render_template(
-        "users/jobs.html",
-        jobs=jobs,
-        applied_jobs=applied_jobs
-    )
+    return render_template("users/jobs.html",jobs=jobs,
+        applied_jobs=applied_jobs)
 
 # ADMIN PAGE
 # =========================
@@ -309,22 +317,17 @@ def admin():
 
 @app.route("/recruiters")
 def recruiters():
-
     recruiters = Recruiter.query.all()
 
     return render_template("admin/recruiters.html",recruiters=recruiters)
 
 @app.route("/admin-jobs")
 def admin_jobs():
-
-    jobs = db.session.query(Job,Recruiter).join(Recruiter,
-        Job.recruiter_id == Recruiter.id).all()
-
+    jobs = db.session.query(Job,Recruiter).join(Recruiter, Job.recruiter_id == Recruiter.id).all()
     return render_template( "admin/jobs.html",jobs=jobs)
 
 @app.route("/users")
 def users():
-
     users = User.query.all()
     return render_template( "admin/users.html", users=users)
 
@@ -341,8 +344,7 @@ def recent_users():
             "name": r.fullname,
             "email": r.email,
             "type": "Recruiter",
-            "created_at": r.created_at
-        })
+            "created_at": r.created_at})
 
     combined.sort(key=lambda x: x["created_at"], reverse=True)
     return jsonify(combined[:10])   # latest 10
@@ -350,22 +352,64 @@ def recent_users():
 @app.route('/user')
 def user():
     return render_template("users/user.html")
-@app.route("/user-profile")
-def user_profile():
+@app.route("/profile")
+def profile():
 
     if "user_id" not in session:
         return redirect("/")
 
-    user_id = session.get("user_id")
-    user = User.query.get(user_id)
+    user = User.query.get(session["user_id"])
 
-    return render_template(
-        "users/user_profile.html",
-        user=user)
+    total_applications = Application.query.filter_by(user_id=user.id).count()
+    shortlisted = Application.query.filter_by(user_id=user.id,status="Shortlisted").count()
+    pending = Application.query.filter_by(user_id=user.id,status="Pending").count()
+    rejected = Application.query.filter_by(user_id=user.id,status="Rejected").count()
+
+    return render_template("users/profile.html",user=user,total_applications=total_applications,
+        shortlisted=shortlisted,pending=pending,rejected=rejected)
+
+@app.route("/edit-profile", methods=["GET","POST"])
+def edit_profile():
+    if "user_id" not in session:
+        return redirect("/")
+
+    user = User.query.get(session["user_id"])
+    if request.method == "POST":
+
+        user.fullname = request.form["fullname"]
+        user.phone = request.form["phone"]
+        user.location = request.form["location"]
+        user.headline = request.form["headline"]
+        user.skills = request.form["skills"]
+        user.education = request.form["education"]
+        user.experience = request.form["experience"]
+        dob = request.form.get("dob")
+
+        if dob:
+            user.dob = datetime.strptime(dob,"%Y-%m-%d").date()
+
+        picture = request.files.get("profile_pic")
+
+        if picture and picture.filename != "":
+            if allowed_image(picture.filename):
+
+                filename = secure_filename(picture.filename)
+                filename = f"user_{user.id}_{filename}"
+
+                filepath = os.path.join(app.config["PROFILE_FOLDER"], filename)
+                picture.save(filepath)
+
+                user.profile_pic = f"profile_pics/{filename}"
+
+            else:
+                return render_template("users/edit_profile.html", user=user, error="Only PNG, JPG and JPEG images are allowed.")
+
+        db.session.commit()
+        return redirect("/profile")
+    return render_template("users/edit_profile.html", user=user)
 
 @app.route("/my-interviews")
 def my_interviews():
-
     if "user_id" not in session:
         return redirect("/")
 
@@ -383,15 +427,12 @@ def resume():
 
     if "user_id" not in session:
         return redirect("/")
-
     user = User.query.get(session["user_id"])
 
     if request.method == "POST":
         file = request.files.get("resume")
 
         if file and file.filename != "":
-
-            # ADD THESE LINES HERE
             if not file.filename.lower().endswith(".pdf"):
                 return "Only PDF resumes are allowed."
 
@@ -551,6 +592,17 @@ def update_application(app_id):
     db.session.commit()
     return redirect("/applications")
 
+def get_recommendation(score):
+    if score >= 90:
+        return "⭐ Excellent Match"
+    elif score >= 75:
+        return "✅ Good Match"
+    elif score >= 60:
+        return "⚠ Fair Match"
+    else:
+        return "❌ Low Match"
+
+
 @app.route("/apply/<int:job_id>", methods=["POST"])
 def apply_job(job_id):
 
@@ -571,14 +623,19 @@ def apply_job(job_id):
     job = Job.query.get(job_id)
 
     # AI MATCHING
-    score = calculate_similarity(user.resume_text, job.description)
+    job_text = job.title + " " + job.description
+    resume_text = user.resume_text or ""
+
+    score = calculate_similarity(resume_text, job_text)
+    label = get_recommendation(score)
 
     app_obj = Application(
         user_id=user_id,
         job_id=job_id,
         resume=user.resume,
         status="Pending",
-        similarity_score=score
+        similarity_score=score,
+        match_label=label
     )
 
     db.session.add(app_obj)
@@ -586,6 +643,30 @@ def apply_job(job_id):
 
     return redirect("/my-applications")
 
+
+@app.route("/recalculate-scores")
+def recalculate_scores():
+
+    applications = Application.query.all()
+
+    for app_obj in applications:
+
+        user = User.query.get(app_obj.user_id)
+        job = Job.query.get(app_obj.job_id)
+
+        if not user or not job:
+            continue
+
+        resume_text = user.resume_text or ""
+        job_text = job.title + " " + job.description
+
+        score = calculate_similarity(resume_text, job_text)
+
+        app_obj.similarity_score = score
+
+    db.session.commit()
+
+    return jsonify({"message": "All scores recalculated successfully"})
 #==============================================================
 @app.route("/logout")
 def logout():
