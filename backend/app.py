@@ -7,6 +7,7 @@ from pdfminer.high_level import extract_text
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from PIL import Image
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
@@ -35,7 +36,7 @@ class User(db.Model):
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
 
-    profile_pic = db.Column(db.String(200),default="profile_pics/default.png")
+    profile_pic = db.Column(db.String(200), default="default.png")
 
     phone = db.Column(db.String(20))
     location = db.Column(db.String(100))
@@ -70,6 +71,9 @@ class Application(db.Model):
     resume = db.Column(db.String(255))
     status = db.Column(db.String(50), default="Pending")
     similarity_score = db.Column(db.Float, default=0.0)
+    skill_score = db.Column(db.Float, default=0.0)
+    experience_score = db.Column(db.Float, default=0.0)
+    final_score = db.Column(db.Float, default=0.0)
     match_label = db.Column(db.String(50))
     
     interview_status = db.Column(db.String(20),default="Not Scheduled")
@@ -103,9 +107,63 @@ def extract_pdf_text(filepath):
         return ""
 
 
+import re
+
+COMMON_SKILLS = {
+    "python", "java", "c", "c++", "javascript", "html", "css",
+    "sql", "mysql", "flask", "django", "react", "node",
+    "machine learning", "tensorflow", "pandas",
+    "numpy", "git", "linux", "aws"
+}
+
+
+def extract_skills(text):
+    text = text.lower()
+    skills = set()
+
+    for skill in COMMON_SKILLS:
+        if skill in text:
+            skills.add(skill)
+
+    return skills
+
+
+def skill_match_score(resume_text, job_text):
+    resume_skills = extract_skills(resume_text)
+    job_skills = extract_skills(job_text)
+
+    if len(job_skills) == 0:
+        return 0
+
+    matched = resume_skills.intersection(job_skills)
+
+    return round((len(matched) / len(job_skills)) * 100, 2)
+
+
+def experience_score(resume_text):
+    resume_text = resume_text.lower()
+
+    match = re.search(r'(\d+)\+?\s*(year|years)', resume_text)
+
+    if not match:
+        return 0
+
+    years = int(match.group(1))
+
+    if years >= 10:
+        return 100
+
+    return years * 10
+
 def calculate_similarity(resume_text, job_text):
+
     if not resume_text or not job_text:
-        return 0.0
+        return {
+            "similarity": 0,
+            "skill_score": 0,
+            "experience_score": 0,
+            "final_score": 0
+        }
 
     resume_text = resume_text.lower()
     job_text = job_text.lower()
@@ -114,15 +172,27 @@ def calculate_similarity(resume_text, job_text):
 
     tfidf = TfidfVectorizer(
         stop_words="english",
-        ngram_range=(1, 2),   # IMPROVES matching
+        ngram_range=(1,2),
         max_features=5000
     )
 
     matrix = tfidf.fit_transform(docs)
+    similarity = cosine_similarity(matrix[0:1], matrix[1:2])[0][0] * 100
+    skill_score = skill_match_score(resume_text, job_text)
+    experience = experience_score(resume_text)
 
-    score = cosine_similarity(matrix[0:1], matrix[1:2])[0][0]
+    final_score = (
+        similarity * 0.60 +
+        skill_score * 0.25 +
+        experience * 0.15
+    )
 
-    return round(float(score * 100), 2)
+    return {
+        "similarity": round(similarity,2),
+        "skill_score": round(skill_score,2),
+        "experience_score": round(experience,2),
+        "final_score": round(final_score,2)
+    }
 
 # CREATE DB
 with app.app_context():
@@ -163,7 +233,9 @@ def register():
         if User.query.filter_by(email=email).first():
             return jsonify({"success": False, "message": "User already exists"})
 
-        db.session.add(User(fullname=fullname, email=email, password=password))
+        hashed_password = generate_password_hash(password)
+
+        db.session.add(User(fullname=fullname,email=email,password=hashed_password))
         db.session.commit()
 
         return jsonify({"success": True, "message": "User registered"})
@@ -173,7 +245,9 @@ def register():
         if Recruiter.query.filter_by(email=email).first():
             return jsonify({"success": False, "message": "Recruiter already exists"})
 
-        db.session.add(Recruiter(fullname=fullname, email=email, password=password))
+        hashed_password = generate_password_hash(password)
+
+        db.session.add(Recruiter(fullname=fullname,email=email,password=hashed_password ))
         db.session.commit()
 
         return jsonify({"success": True, "message": "Recruiter registered"})
@@ -197,22 +271,23 @@ def login():
 
     # USER
     if role == "user":
-        user = User.query.filter_by(email=email, password=password).first()
-        if user:
+        user = User.query.filter_by(email=email).first()
+
+        if user and check_password_hash(user.password, password):
             session["role"] = "user"
             session["user_id"] = user.id
             session["user_name"] = user.fullname
-            return jsonify({"success": True, "redirect": url_for("user")})
+            return jsonify({ "success": True, "redirect": url_for("user") })
 
     # RECRUITER
     if role == "recruiter":
-        recruiter = Recruiter.query.filter_by(email=email, password=password).first()
-        if recruiter:
+        recruiter = Recruiter.query.filter_by(email=email).first()
+
+        if recruiter and check_password_hash(recruiter.password, password):
             session["role"] = "recruiter"
             session["recruiter_id"] = recruiter.id
             session["recruiter_name"] = recruiter.fullname
-            return jsonify({"success": True, "redirect": url_for("recruiter")})
-
+            return jsonify({"success": True,"redirect": url_for("recruiter") })
     return jsonify({"success": False, "message": "Invalid credentials"})
 
 @app.route("/create-job", methods=["POST"])
@@ -251,7 +326,7 @@ def candidates():
 def applications():
 
     recruiter_id = session.get("recruiter_id")
-    data = db.session.query(Application, User, Job).join(User, Application.user_id == User.id).join(Job, Application.job_id == Job.id).filter(Job.recruiter_id == recruiter_id).order_by(Application.similarity_score.desc()).all()
+    data = db.session.query(Application, User, Job).join(User, Application.user_id == User.id).join(Job, Application.job_id == Job.id).filter(Job.recruiter_id == recruiter_id).order_by(Application.final_score.desc())
 
     return render_template("recruiter/applications.html", data=data)
 
@@ -288,6 +363,18 @@ def recruiter_profile():
     recruiter = Recruiter.query.get(recruiter_id)
 
     return render_template("recruiter/recruiter_profile.html",recruiter=recruiter)
+
+
+@app.route("/recruiter/<int:recruiter_id>")
+def recruiter_details(recruiter_id):
+
+    recruiter = Recruiter.query.get_or_404(recruiter_id)
+
+    return render_template(
+        "recruiter/recruiter_profile.html",
+        recruiter=recruiter
+    )
+
 
 @app.route("/jobs")
 def jobs():
@@ -368,6 +455,17 @@ def profile():
     return render_template("users/profile.html",user=user,total_applications=total_applications,
         shortlisted=shortlisted,pending=pending,rejected=rejected)
 
+
+@app.route("/user/<int:user_id>")
+def admin_user_profile(user_id):
+
+    user = User.query.get_or_404(user_id)
+
+    return render_template(
+        "recruiter/candidate_profile.html",
+        user=user
+    )
+
 @app.route("/edit-profile", methods=["GET","POST"])
 def edit_profile():
     if "user_id" not in session:
@@ -399,7 +497,7 @@ def edit_profile():
                 filepath = os.path.join(app.config["PROFILE_FOLDER"], filename)
                 picture.save(filepath)
 
-                user.profile_pic = f"profile_pics/{filename}"
+                user.profile_pic = filename
 
             else:
                 return render_template("users/edit_profile.html", user=user, error="Only PNG, JPG and JPEG images are allowed.")
@@ -452,18 +550,68 @@ def resume():
     # THIS IS MISSING
     return render_template( "users/resume.html",user=user)
 
+@app.route("/api/profile-completion")
+def profile_completion():
+
+    if "user_id" not in session:
+        return jsonify({"completion": 0})
+
+    user = User.query.get(session["user_id"])
+
+    fields = [
+        user.phone,
+        user.location,
+        user.dob,
+        user.headline,
+        user.skills,
+        user.education,
+        user.experience,
+        user.resume,
+        user.profile_pic
+    ]
+
+    filled = sum(1 for field in fields if field)
+
+    percent = round((filled / len(fields)) * 100)
+
+    return jsonify({"completion": percent})
+
 @app.route("/api/user-stats")
 def user_stats():
+
     user_id = session.get("user_id")
+
+    if not user_id:
+        return jsonify({"error": "User not logged in"}), 401
+
+    user = User.query.get(user_id)
+
     total = Application.query.filter_by(user_id=user_id).count()
 
     interviews = Application.query.filter_by(
-     user_id=user_id,interview_status="Scheduled").count()
+        user_id=user_id,
+        interview_status="Scheduled"
+    ).count()
+
+    fields = [
+        user.phone,
+        user.location,
+        user.dob,
+        user.headline,
+        user.skills,
+        user.education,
+        user.experience,
+        user.resume,
+        user.profile_pic if user.profile_pic != "default.png" else None
+    ]
+
+    filled = sum(1 for field in fields if field)
+    completion = round((filled / len(fields)) * 100)
 
     return jsonify({
         "jobs_applied": total,
         "interviews": interviews,
-        "profile_completion": 70,
+        "profile_completion": completion,
         "ai_score": 65
     })
 
@@ -626,15 +774,26 @@ def apply_job(job_id):
     job_text = job.title + " " + job.description
     resume_text = user.resume_text or ""
 
-    score = calculate_similarity(resume_text, job_text)
-    label = get_recommendation(score)
+    scores = calculate_similarity(resume_text, job_text)
+
+    similarity = scores["similarity"]
+    skill_score = scores["skill_score"]
+    experience = scores["experience_score"]
+    final_score = scores["final_score"]
+
+    label = get_recommendation(final_score)
 
     app_obj = Application(
         user_id=user_id,
         job_id=job_id,
         resume=user.resume,
         status="Pending",
-        similarity_score=score,
+
+        similarity_score=similarity,
+        skill_score=skill_score,
+        experience_score=experience,
+        final_score=final_score,
+
         match_label=label
     )
 
@@ -660,13 +819,46 @@ def recalculate_scores():
         resume_text = user.resume_text or ""
         job_text = job.title + " " + job.description
 
-        score = calculate_similarity(resume_text, job_text)
+        scores = calculate_similarity(resume_text, job_text)
 
-        app_obj.similarity_score = score
+        app_obj.similarity_score = scores["similarity"]
+        app_obj.skill_score = scores["skill_score"]
+        app_obj.experience_score = scores["experience_score"]
+        app_obj.final_score = scores["final_score"]
+        app_obj.match_label = get_recommendation(scores["final_score"])
 
     db.session.commit()
 
     return jsonify({"message": "All scores recalculated successfully"})
+
+@app.route("/delete-user/<int:user_id>", methods=["POST"])
+def delete_user(user_id):
+
+    user = User.query.get_or_404(user_id)
+
+    # Delete applications submitted by this user
+    Application.query.filter_by(user_id=user.id).delete()
+
+    db.session.delete(user)
+    db.session.commit()
+
+    return redirect(url_for("users"))
+
+@app.route("/delete-recruiter/<int:recruiter_id>", methods=["POST"])
+def delete_recruiter(recruiter_id):
+
+    recruiter = Recruiter.query.get_or_404(recruiter_id)
+
+    jobs = Job.query.filter_by(recruiter_id=recruiter.id).all()
+
+    for job in jobs:
+        Application.query.filter_by(job_id=job.id).delete()
+        db.session.delete(job)
+
+    db.session.delete(recruiter)
+    db.session.commit()
+
+    return redirect(url_for("recruiters"))
 #==============================================================
 @app.route("/logout")
 def logout():

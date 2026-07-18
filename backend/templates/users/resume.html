@@ -75,14 +75,31 @@ hr{
 p{
     color:rgba(255,255,255,0.7);
 }
+.back-btn{
+    display:inline-block;
+    margin-bottom:20px;
+    padding:8px 16px;
+    background:rgba(255,255,255,0.08);
+    color:white;
+    text-decoration:none;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.12);
+    font-weight:600;
+    transition:0.3s;
+}
 
+.back-btn:hover{
+    background:#3b82f6;
+    color:white;
+    transform:translateX(-3px);
+}
 </style>
 </head>
 
 <body>
 
 <div class="box">
-
+    <a href="{{ url_for('user') }}" class="back-btn">← Back</a>
     <h2>Upload Resume</h2>
 
     <form method="POST" enctype="multipart/form-data">

@@ -11,104 +11,152 @@
 <style>
 
 *{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:"Poppins",sans-serif;
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Poppins,sans-serif;
 }
 
 body{
-    background:#0b0f1a;
-    color:white;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
-    overflow:hidden;
+background:#0b0f1a;
+color:white;
 }
 
-/* Animated Background */
-
 .bg{
-    position:fixed;
-    inset:0;
-    background:
-        radial-gradient(circle at 20% 20%, #6366f1 0%, transparent 40%),
-        radial-gradient(circle at 80% 30%, #22d3ee 0%, transparent 40%),
-        radial-gradient(circle at 50% 80%, #a855f7 0%, transparent 40%);
-    filter:blur(90px);
-    animation:move 12s infinite alternate;
-    z-index:-1;
+position:fixed;
+inset:0;
+background:
+radial-gradient(circle at 20% 20%,#6366f1 0%,transparent 40%),
+radial-gradient(circle at 80% 30%,#22d3ee 0%,transparent 40%),
+radial-gradient(circle at 50% 80%,#a855f7 0%,transparent 40%);
+filter:blur(90px);
+animation:move 12s infinite alternate;
+z-index:-1;
 }
 
 @keyframes move{
-    0%{transform:translate(0,0);}
-    100%{transform:translate(40px,-30px);}
+0%{transform:translate(0,0);}
+100%{transform:translate(40px,-30px);}
 }
 
-/* Card */
-
-.card{
-    width:450px;
-    background:rgba(255,255,255,0.06);
-    backdrop-filter:blur(20px);
-    border:1px solid rgba(255,255,255,0.08);
-    border-radius:22px;
-    padding:35px;
-    box-shadow:0 0 30px rgba(0,0,0,.35);
+.container{
+max-width:900px;
+margin:40px auto;
+padding:20px;
 }
 
-.card h1{
-    text-align:center;
-    margin-bottom:30px;
-    color:#60a5fa;
+.profile{
+background:rgba(255,255,255,.06);
+backdrop-filter:blur(20px);
+border:1px solid rgba(255,255,255,.08);
+border-radius:20px;
+padding:30px;
 }
 
-.info{
-    margin-bottom:18px;
-    font-size:16px;
+.top{
+display:flex;
+align-items:center;
+gap:25px;
+margin-bottom:30px;
 }
 
-.info strong{
-    color:#93c5fd;
+.photo{
+width:120px;
+height:120px;
+border-radius:50%;
+overflow:hidden;
+background:#1e293b;
+flex-shrink:0;
 }
 
-.resume-btn,
-.back-btn{
-    display:block;
-    width:100%;
-    text-align:center;
-    text-decoration:none;
-    padding:13px;
-    border-radius:12px;
-    font-weight:600;
-    margin-top:18px;
-    transition:.3s;
+.photo img{
+width:100%;
+height:100%;
+object-fit:cover;
 }
 
-.resume-btn{
-    background:linear-gradient(90deg,#3b82f6,#8b5cf6);
-    color:white;
+.details h1{
+font-size:30px;
+margin-bottom:6px;
 }
 
-.resume-btn:hover{
-    transform:translateY(-3px);
-    filter:brightness(1.1);
+.details p{
+color:#cbd5e1;
 }
 
-.back-btn{
-    background:rgba(255,255,255,0.08);
-    color:white;
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:18px;
+margin-top:20px;
 }
 
-.back-btn:hover{
-    background:rgba(255,255,255,0.15);
+.box{
+background:rgba(255,255,255,.05);
+padding:18px;
+border-radius:14px;
 }
 
-.no-resume{
-    text-align:center;
-    color:#fca5a5;
-    margin-top:15px;
+.box h3{
+color:#60a5fa;
+margin-bottom:10px;
+font-size:15px;
+}
+
+.box p{
+color:#d1d5db;
+line-height:1.6;
+white-space:pre-wrap;
+}
+
+.full{
+grid-column:1/-1;
+}
+
+.buttons{
+margin-top:30px;
+display:flex;
+gap:15px;
+flex-wrap:wrap;
+}
+
+.btn{
+padding:12px 22px;
+border-radius:10px;
+text-decoration:none;
+font-weight:600;
+transition:.3s;
+}
+
+.resume{
+background:linear-gradient(90deg,#3b82f6,#8b5cf6);
+color:white;
+}
+
+.resume:hover{
+transform:translateY(-3px);
+}
+
+.back{
+background:rgba(255,255,255,.08);
+color:white;
+}
+
+.back:hover{
+background:rgba(255,255,255,.15);
+}
+
+@media(max-width:700px){
+
+.top{
+flex-direction:column;
+text-align:center;
+}
+
+.grid{
+grid-template-columns:1fr;
+}
+
 }
 
 </style>
@@ -118,41 +166,98 @@ body{
 
 <div class="bg"></div>
 
-<div class="card">
+<div class="container">
 
-    <h1>Candidate Profile</h1>
+<div class="profile">
 
-    <div class="info">
-        <strong>Name:</strong><br>
-        {{ user.fullname }}
-    </div>
+<div class="top">
 
-    <div class="info">
-        <strong>Email:</strong><br>
-        {{ user.email }}
-    </div>
+<div class="photo">
 
-    {% if user.resume %}
+<img src="{{ url_for('static', filename='profile_pics/' + user.profile_pic) }}">
 
-    <a class="resume-btn"
-       href="{{ url_for('static', filename='resumes/' + user.resume) }}"
-       target="_blank">
+</div>
 
-        📄 View Resume
+<div class="details">
 
-    </a>
+<h1>{{ user.fullname }}</h1>
 
-    {% else %}
+<p>{{ user.headline if user.headline else "No headline added." }}</p>
 
-    <p class="no-resume">
-        No resume uploaded.
-    </p>
+<p>{{ user.email }}</p>
 
-    {% endif %}
+</div>
 
-    <a href="/candidates" class="back-btn">
-        ← Back to Candidates
-    </a>
+</div>
+
+<div class="grid">
+
+<div class="box">
+<h3>Phone</h3>
+<p>{{ user.phone or "Not provided" }}</p>
+</div>
+
+<div class="box">
+<h3>Location</h3>
+<p>{{ user.location or "Not provided" }}</p>
+</div>
+
+<div class="box">
+<h3>Date of Birth</h3>
+<p>
+{% if user.dob %}
+{{ user.dob.strftime("%d %B %Y") }}
+{% else %}
+Not provided
+{% endif %}
+</p>
+</div>
+
+<div class="box">
+<h3>Member Since</h3>
+<p>{{ user.created_at.strftime("%d %B %Y") }}</p>
+</div>
+
+<div class="box full">
+<h3>Skills</h3>
+<p>{{ user.skills or "No skills added." }}</p>
+</div>
+
+<div class="box full">
+<h3>Education</h3>
+<p>{{ user.education or "No education added." }}</p>
+</div>
+
+<div class="box full">
+<h3>Experience</h3>
+<p>{{ user.experience or "No experience added." }}</p>
+</div>
+
+</div>
+
+<div class="buttons">
+
+{% if user.resume %}
+
+<a class="btn resume"
+href="{{ url_for('static', filename='resumes/' + user.resume) }}"
+target="_blank">
+
+📄 View Resume
+
+</a>
+
+{% endif %}
+
+<a class="btn back" href="/candidates">
+
+← Back to Candidates
+
+</a>
+
+</div>
+
+</div>
 
 </div>
 

@@ -96,7 +96,32 @@ input, textarea{
     color:white;
     font-size:15px;
 }
+.salary-group{
+    margin-bottom:15px;
+}
 
+.salary-group input[type="number"]{
+    width:100%;
+}
+
+.checkbox{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-top:8px;
+    color:#cbd5e1;
+    cursor:pointer;
+    font-size:15px;
+}
+
+.checkbox input[type="checkbox"]{
+    width:18px;
+    height:18px;
+    margin:0;
+    accent-color:#3b82f6;
+    cursor:pointer;
+    flex-shrink:0;
+}
 input::placeholder,
 textarea::placeholder{
     color:#cbd5e1;
@@ -143,8 +168,8 @@ hr{
 <div class="header">
     <h1>Post Jobs</h1>
 
-    <a href="/logout">
-        <button class="logout-btn">Logout</button>
+    <a href="/recruiter">
+        <button class="logout-btn">Back</button>
     </a>
 </div>
 
@@ -157,7 +182,23 @@ hr{
         <input name="title" placeholder="Job Title" required>
         <input name="company" placeholder="Company Name" required>
         <input name="location" placeholder="Location" required>
-        <input name="salary" placeholder="Salary (e.g. 50k - 80k)" required>
+        <div class="salary-group">
+
+            <input
+                type="number"
+                id="salaryInput"
+                placeholder="Salary (NPR)"
+                min="1"
+                required>
+
+            <label class="checkbox">
+                <input type="checkbox" id="negotiable">
+                <span>Negotiable</span>
+            </label>
+
+            <input type="hidden" name="salary" id="salaryHidden">
+
+        </div>
 
         <textarea name="description" placeholder="Job Description"></textarea>
 
@@ -170,6 +211,41 @@ hr{
 </div>
 
 </div>
+<script>
 
+const salaryInput = document.getElementById("salaryInput");
+const negotiable = document.getElementById("negotiable");
+const hiddenSalary = document.getElementById("salaryHidden");
+const form = document.querySelector("form");
+
+negotiable.addEventListener("change", () => {
+
+    salaryInput.disabled = negotiable.checked;
+    salaryInput.required = !negotiable.checked;
+
+    if(negotiable.checked){
+        salaryInput.value = "";
+    }
+
+});
+
+form.addEventListener("submit",(e)=>{
+
+    if(negotiable.checked){
+        hiddenSalary.value="Negotiable";
+    }else{
+
+        if(Number(salaryInput.value)<=0){
+            alert("Salary must be greater than 0.");
+            e.preventDefault();
+            return;
+        }
+
+        hiddenSalary.value=salaryInput.value;
+    }
+
+});
+
+</script>
 </body>
 </html>

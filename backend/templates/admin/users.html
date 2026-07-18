@@ -81,6 +81,29 @@ tr:hover {
   color: blue;
   font-weight: bold;
 }
+.delete-btn{
+    background:#dc2626;
+    color:white;
+    border:none;
+    padding:7px 14px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+.delete-btn:hover{
+    background:#b91c1c;
+}
+.user-link{
+    color:#1f2937;
+    text-decoration:none;
+    font-weight:600;
+    transition:.3s;
+}
+
+.user-link:hover{
+    color:#2563eb;
+    text-decoration:underline;
+}
 </style>
 </head>
 
@@ -99,17 +122,39 @@ tr:hover {
       <th>Email</th>
       <th>Type</th>
       <th>Joined</th>
+      <th>Action</th>
     </tr>
   </thead>
 
   <tbody>
     {% for user in users %}
     <tr>
-      <td>{{ user.fullname }}</td>
+
+      <td>
+          <a class="user-link" href="/user/{{ user.id }}">
+              {{ user.fullname }}
+          </a>
+      </td>
+
       <td>{{ user.email }}</td>
-      <td><span class="badge-user">User</span></td>
+
+      <td>
+          <span class="badge-user">User</span>
+      </td>
+
       <td>{{ user.created_at.strftime("%d-%m-%Y %H:%M") }}</td>
-    </tr>
+
+      <td>
+          <form action="{{ url_for('delete_user', user_id=user.id) }}" method="POST">
+              <button type="submit"
+                      class="delete-btn"
+                      onclick="return confirm('Delete this user?')">
+                  Delete
+              </button>
+          </form>
+      </td>
+
+  </tr>
     {% endfor %}
   </tbody>
 </table>

@@ -7,90 +7,174 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Poppins",sans-serif;
 }
 
-body {
-  background: #f4f6f9;
-  padding: 20px;
+body{
+    background:#f4f6f9;
+    padding:20px;
 }
 
 /* HEADER */
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
 }
 
-h1 {
-  color: #1f2937;
+h1{
+    color:#1f2937;
 }
 
-/* BUTTON */
-button {
-  padding: 10px 15px;
-  background: #1f2937;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+button{
+    padding:10px 15px;
+    background:#1f2937;
+    color:white;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
 }
 
-/* GRID */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 20px;
+button:hover{
+    background:#111827;
 }
 
-/* CARD */
-.card {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-  transition: 0.2s ease;
+/* TABLE */
+
+.table-box{
+    background:white;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 5px 15px rgba(0,0,0,.05);
 }
 
-.card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+table{
+    width:100%;
+    border-collapse:collapse;
 }
 
-.card h3 {
-  color: #1f2937;
-  margin-bottom: 8px;
+th{
+    background:#1f2937;
+    color:white;
+    text-align:left;
+    padding:12px;
 }
 
-.card p {
-  color: #6b7280;
+td{
+    padding:12px;
+    border-bottom:1px solid #eee;
 }
+
+tr:hover{
+    background:#f9fafb;
+}
+
+/* BADGE */
+
+.badge{
+    color:#2563eb;
+    font-weight:600;
+}
+
+/* CLICKABLE NAME */
+
+.recruiter-link{
+    color:#1f2937;
+    text-decoration:none;
+    font-weight:600;
+    transition:.3s;
+}
+
+.recruiter-link:hover{
+    color:#2563eb;
+    text-decoration:underline;
+}
+.delete-btn{
+    background:#dc2626;
+    color:white;
+    border:none;
+    padding:7px 14px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+.delete-btn:hover{
+    background:#b91c1c;
+}
+
 </style>
+
 </head>
 
 <body>
 
 <div class="header">
-  <h1>All Recruiters</h1>
 
-  <button onclick="window.location.href='/admin'">
-    Back
-  </button>
+    <h1>Registered Recruiters</h1>
+
+    <button onclick="window.location.href='/admin'">
+        Back
+    </button>
+
 </div>
 
-<div class="grid">
+<div class="table-box">
 
-  {% for recruiter in recruiters %}
-  <div class="card">
-    <h3>{{ recruiter.fullname }}</h3>
-    <p>{{ recruiter.email }}</p>
-  </div>
-  {% endfor %}
+<table>
+
+<thead>
+
+<tr>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Type</th>
+    <th>Joined</th>
+    <th>Action</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for recruiter in recruiters %}
+
+<tr>
+
+    <td>
+        <a class="recruiter-link" href="/recruiter/{{ recruiter.id }}">
+            {{ recruiter.fullname }}
+        </a>
+    </td>
+
+    <td>{{ recruiter.email }}</td>
+
+    <td><span class="badge">Recruiter</span></td>
+    <td>
+        {{ recruiter.created_at.strftime("%d-%m-%Y %H:%M") }} </td>
+        <td>
+          <form action="{{ url_for('delete_recruiter', recruiter_id=recruiter.id) }}" method="POST">
+              <button type="submit"
+                      class="delete-btn"
+                      onclick="return confirm('Delete this recruiter?')">
+                  Delete
+              </button>
+          </form>
+      </td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
 
 </div>
 

@@ -81,8 +81,11 @@ h1{
 <div class="app-card">
 
     <h3>{{ job.title }}</h3>
-
     <p><b>Company:</b> {{ job.company }}</p>
+    <p><b>Similarity:</b> {{ app.similarity_score }}%</p>
+    <p><b>Skill Match:</b> {{ app.skill_score }}%</p>
+    <p><b>Experience:</b> {{ app.experience_score }}%</p>
+    <p><b>Final AI Score:</b> {{ app.final_score }}%</p>
 
     <span class="status">
         {{ app.status }}
