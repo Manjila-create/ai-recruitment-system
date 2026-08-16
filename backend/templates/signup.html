@@ -272,10 +272,18 @@ const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 // ---------------- VALIDATION ----------------
 
 function validateName(){
-  if(fullname.value.trim().length < 3){
+  const name = fullname.value.trim();
+
+  if(name.length < 3){
     nameError.textContent = "Name must be at least 3 characters";
     return false;
   }
+
+  if(!/^[A-Za-z]+(?:\s+[A-Za-z]+)*$/.test(name)){
+    nameError.textContent = "Name can contain letters and spaces only";
+    return false;
+  }
+
   nameError.textContent = "";
   return true;
 }

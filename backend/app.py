@@ -2,12 +2,14 @@ from flask import Flask, render_template, request, jsonify, url_for, session,red
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import os
+import re
 from werkzeug.utils import secure_filename
 from pdfminer.high_level import extract_text
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from PIL import Image
 from werkzeug.security import generate_password_hash, check_password_hash
+
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
@@ -16,6 +18,8 @@ app.secret_key = "supersecretkey"
 UPLOAD_FOLDER = "static/resumes"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+
 # PROFILE PICTURE UPLOAD
 PROFILE_FOLDER = "static/profile_pics"
 app.config["PROFILE_FOLDER"] = PROFILE_FOLDER
@@ -221,37 +225,98 @@ def signup():
 # =========================
 @app.route('/register', methods=['POST'])
 def register():
-
     data = request.get_json()
-    fullname = data.get("fullname")
-    email = data.get("email")
-    password = data.get("password")
+
+    fullname = data.get("fullname", "").strip()
+    email = data.get("email", "").strip()
+    password = data.get("password", "")
     role = data.get("role")
 
+    # NAME VALIDATION
+    if len(fullname) < 3:
+        return jsonify({
+            "success": False,
+            "message": "Name must be at least 3 characters"
+        })
+
+    if not re.match(r"^[A-Za-z]+(?:\s+[A-Za-z]+)*$", fullname):
+        return jsonify({
+            "success": False,
+            "message": "Name can contain letters and spaces only"
+        })
+
+    # EMAIL VALIDATION
+    if not email:
+        return jsonify({
+            "success": False,
+            "message": "Email is required"
+        })
+
+    # PASSWORD VALIDATION
+    if len(password) < 6:
+        return jsonify({
+            "success": False,
+            "message": "Password must be at least 6 characters"
+        })
+
+    # ROLE VALIDATION
+    if role not in ["user", "recruiter"]:
+        return jsonify({
+            "success": False,
+            "message": "Invalid role"
+        })
+
+    # USER REGISTRATION
     if role == "user":
 
         if User.query.filter_by(email=email).first():
-            return jsonify({"success": False, "message": "User already exists"})
+            return jsonify({
+                "success": False,
+                "message": "User already exists"
+            })
 
         hashed_password = generate_password_hash(password)
 
-        db.session.add(User(fullname=fullname,email=email,password=hashed_password))
+        db.session.add(
+            User(
+                fullname=fullname,
+                email=email,
+                password=hashed_password
+            )
+        )
+
         db.session.commit()
 
-        return jsonify({"success": True, "message": "User registered"})
+        return jsonify({
+            "success": True,
+            "message": "User registered"
+        })
 
+    # RECRUITER REGISTRATION
     elif role == "recruiter":
 
         if Recruiter.query.filter_by(email=email).first():
-            return jsonify({"success": False, "message": "Recruiter already exists"})
+            return jsonify({
+                "success": False,
+                "message": "Recruiter already exists"
+            })
 
         hashed_password = generate_password_hash(password)
 
-        db.session.add(Recruiter(fullname=fullname,email=email,password=hashed_password ))
+        db.session.add(
+            Recruiter(
+                fullname=fullname,
+                email=email,
+                password=hashed_password
+            )
+        )
+
         db.session.commit()
 
-        return jsonify({"success": True, "message": "Recruiter registered"})
-    return jsonify({"success": False, "message": "Invalid role"})
+        return jsonify({
+            "success": True,
+            "message": "Recruiter registered"
+        })
 
 # =========================
 # LOGIN
@@ -401,6 +466,67 @@ def admin():
         total_users=total_users,
         total_recruiters=total_recruiters,
         total_jobs=total_jobs)
+
+@app.route("/admin-dashboard")
+def admin_dashboard():
+
+    total_users = User.query.count()
+    total_recruiters = Recruiter.query.count()
+    total_jobs = Job.query.count()
+    total_applications = Application.query.count()
+
+    # Application status data
+
+    pending = Application.query.filter_by(
+        status="Pending"
+    ).count()
+
+    shortlisted = Application.query.filter_by(
+        status="Shortlisted"
+    ).count()
+
+    rejected = Application.query.filter_by(
+        status="Rejected"
+    ).count()
+
+
+
+    # User registration data
+
+    registration_data = db.session.query(
+        db.func.strftime("%Y-%m", User.created_at),
+        db.func.count(User.id)
+    ).group_by(
+        db.func.strftime("%Y-%m", User.created_at)
+    ).all()
+
+
+    months = []
+    user_counts = []
+
+
+    for month,count in registration_data:
+        months.append(str(month))
+        user_counts.append(int(count))
+
+
+
+    return render_template(
+        "admin/dashboard.html",
+
+        total_users=total_users,
+        total_recruiters=total_recruiters,
+        total_jobs=total_jobs,
+        total_applications=total_applications,
+
+        pending=pending,
+        shortlisted=shortlisted,
+        rejected=rejected,
+
+        months=months,
+        user_counts=user_counts
+    )
+
 
 @app.route("/recruiters")
 def recruiters():
