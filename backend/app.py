@@ -455,7 +455,7 @@ def jobs():
         applied_jobs=applied_jobs)
 
 # ADMIN PAGE
-# =========================
+# ==========================================================================================================
 @app.route('/admin')
 def admin():
     total_users = User.query.count()
@@ -561,10 +561,16 @@ def recent_users():
 
     combined.sort(key=lambda x: x["created_at"], reverse=True)
     return jsonify(combined[:10])   # latest 10
-#==========================================================
+#=======================================================================================================================
 @app.route('/user')
 def user():
-    return render_template("users/user.html")
+    if "user_id" not in session:
+        return redirect("/")
+
+    return render_template(
+        "users/user.html",
+        user_name=session.get("user_name")
+    )
 @app.route("/profile")
 def profile():
 
@@ -764,10 +770,13 @@ def recruiter():
     Job.recruiter_id == recruiter_id,
     Application.interview_status == "Scheduled").count()
 
-    return render_template( "recruiter/recruiter.html",
-    total_jobs=total_jobs, total_applications=total_applications,
+    return render_template(
+    "recruiter/recruiter.html",
+    total_jobs=total_jobs,
+    total_applications=total_applications,
     shortlisted_count=shortlisted_count,
-    interview_count=interview_count )
+    interview_count=interview_count,
+    recruiter_name=session.get("recruiter_name"))
 
 
 @app.route("/posted-jobs")
