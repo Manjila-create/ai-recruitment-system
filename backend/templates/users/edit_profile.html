@@ -156,6 +156,85 @@ textarea{
     font-size:12px;
     margin-top:5px;
 }
+.skills-field {
+    width: 100%;
+}
+
+.skills-field label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.skills-select-container {
+    width: 100%;
+}
+
+#skillSelect {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: white;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.selected-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.skill-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 12px;
+    background: #e8efff;
+    color: #3156a3;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.skill-tag button {
+    border: none;
+    background: none;
+    color: #3156a3;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0;
+}
+
+#otherSkillContainer {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+#otherSkillContainer input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+#otherSkillContainer button {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    background: #3e4684;
+    color: white;
+    cursor: pointer;
+}
+#dobError {
+    display: block;
+    color: #ef4444;
+    font-size: 12px;
+    margin-top: 5px;
+}
 
 </style>
 </head>
@@ -178,7 +257,11 @@ textarea{
 <div class="pic-box">
 
 {% if user.profile_pic and user.profile_pic != "profile_pics/default.png" %}
-<img src="{{ url_for('static', filename='profile_pics/' + (user.profile_pic if user.profile_pic else 'default.png')) }}">
+<img
+    class="preview"
+    src="{{ url_for('static', filename='profile_pics/' + user.profile_pic) }}"
+    alt="Profile Picture"
+>
 {% else %}
 <div class="default">
 {{ user.fullname[0]|upper }}
@@ -225,10 +308,18 @@ textarea{
 <label>Location</label>
 <input type="text" name="location" value="{{ user.location or '' }}">
 </div>
-
 <div>
-<label>Date of Birth</label>
-<input type="date" name="dob" value="{{ user.dob }}">
+    <label>Date of Birth</label>
+
+    <input
+        type="date"
+        name="dob"
+        id="dob"
+        value="{{ user.dob or '' }}"
+        required
+    >
+
+    <small id="dobError" style="display:none;"></small>
 </div>
 
 </div>
@@ -243,11 +334,110 @@ textarea{
 <input type="text" name="headline" value="{{ user.headline or '' }}">
 </div>
 
-<div>
-<label>Skills</label>
-<input type="text" name="skills" value="{{ user.skills or '' }}">
-</div>
+<div class="skills-field">
+    <label>Skills</label>
 
+    <div class="skills-select-container">
+
+        <div class="selected-skills" id="selectedSkills"></div>
+
+        <select id="skillSelect">
+            <option value="">Select a skill</option>
+
+            <optgroup label="Programming Languages">
+                <option value="Python">Python</option>
+                <option value="Java">Java</option>
+                <option value="C">C</option>
+                <option value="C++">C++</option>
+                <option value="C#">C#</option>
+                <option value="JavaScript">JavaScript</option>
+                <option value="TypeScript">TypeScript</option>
+                <option value="PHP">PHP</option>
+                <option value="Ruby">Ruby</option>
+                <option value="Go">Go</option>
+                <option value="R">R</option>
+                <option value="Kotlin">Kotlin</option>
+                <option value="Swift">Swift</option>
+            </optgroup>
+
+            <optgroup label="Web Development">
+                <option value="HTML">HTML</option>
+                <option value="CSS">CSS</option>
+                <option value="React">React</option>
+                <option value="Angular">Angular</option>
+                <option value="Vue.js">Vue.js</option>
+                <option value="Node.js">Node.js</option>
+                <option value="Express.js">Express.js</option>
+                <option value="Flask">Flask</option>
+                <option value="Django">Django</option>
+                <option value="Laravel">Laravel</option>
+            </optgroup>
+
+            <optgroup label="Data & Analytics">
+                <option value="SQL">SQL</option>
+                <option value="MySQL">MySQL</option>
+                <option value="PostgreSQL">PostgreSQL</option>
+                <option value="MongoDB">MongoDB</option>
+                <option value="Pandas">Pandas</option>
+                <option value="NumPy">NumPy</option>
+                <option value="Matplotlib">Matplotlib</option>
+                <option value="Seaborn">Seaborn</option>
+                <option value="Power BI">Power BI</option>
+                <option value="Tableau">Tableau</option>
+                <option value="Excel">Microsoft Excel</option>
+            </optgroup>
+
+            <optgroup label="AI & Machine Learning">
+                <option value="Machine Learning">Machine Learning</option>
+                <option value="Deep Learning">Deep Learning</option>
+                <option value="Natural Language Processing">NLP</option>
+                <option value="Computer Vision">Computer Vision</option>
+                <option value="TensorFlow">TensorFlow</option>
+                <option value="PyTorch">PyTorch</option>
+                <option value="Scikit-learn">Scikit-learn</option>
+                <option value="Keras">Keras</option>
+            </optgroup>
+
+            <optgroup label="Cloud & DevOps">
+                <option value="AWS">AWS</option>
+                <option value="Microsoft Azure">Microsoft Azure</option>
+                <option value="Google Cloud">Google Cloud</option>
+                <option value="Docker">Docker</option>
+                <option value="Kubernetes">Kubernetes</option>
+                <option value="Linux">Linux</option>
+                <option value="Git">Git</option>
+                <option value="GitHub">GitHub</option>
+                <option value="CI/CD">CI/CD</option>
+            </optgroup>
+
+            <optgroup label="Other">
+                <option value="Other">Other</option>
+            </optgroup>
+        </select>
+
+        <div id="otherSkillContainer" style="display:none;">
+            <input
+                type="text"
+                id="otherSkill"
+                placeholder="Enter another skill"
+            >
+
+            <button type="button" onclick="addOtherSkill()">
+                Add Skill
+            </button>
+        </div>
+
+    </div>
+
+    <!-- This is what gets submitted to Flask -->
+    <input
+        type="hidden"
+        name="skills"
+        id="skillsInput"
+        value="{{ user.skills or '' }}"
+    >
+
+</div>
 <div>
 <label>Education</label>
 <textarea name="education">{{ user.education or '' }}</textarea>
@@ -300,32 +490,291 @@ function validatePhone() {
     return true;
 }
 
-
-// Remove alphabets and special characters while typing
 phone.addEventListener("input", function () {
     phone.value = phone.value.replace(/[^0-9]/g, "");
 
-    // Hide error when corrected
     if (/^9\d{9}$/.test(phone.value)) {
         phoneError.style.display = "none";
     }
 });
 
-
-// Show error when leaving the field
 phone.addEventListener("blur", function () {
     validatePhone();
 });
 
-
-// Stop form submission if invalid
 form.addEventListener("submit", function (e) {
+
     if (!validatePhone()) {
         e.preventDefault();
         phone.focus();
+        return;
     }
+
+    if (!validateDOB()) {
+        e.preventDefault();
+        dob.focus();
+        return;
+    }
+
 });
-</script>
+/* =========================
+   DATE OF BIRTH VALIDATION
+========================= */
+
+const dob = document.getElementById("dob");
+const dobError = document.getElementById("dobError");
+
+
+/* Calculate allowed DOB range */
+function getDateLimits() {
+
+    const today = new Date();
+
+    // Minimum age = 16
+    const maxDOB = new Date(
+        today.getFullYear() - 16,
+        today.getMonth(),
+        today.getDate()
+    );
+
+    // Maximum age = 100
+    const minDOB = new Date(
+        today.getFullYear() - 100,
+        today.getMonth(),
+        today.getDate()
+    );
+
+    return {
+        minDOB,
+        maxDOB
+    };
+}
+
+
+/* Format JavaScript Date as YYYY-MM-DD */
+function formatDate(date) {
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+}
+
+
+/* Restrict the date picker */
+function setDOBLimits() {
+
+    const { minDOB, maxDOB } = getDateLimits();
+
+    dob.min = formatDate(minDOB);
+    dob.max = formatDate(maxDOB);
+}
+
+setDOBLimits();
+
+
+/* Validate DOB */
+function validateDOB() {
+
+    const value = dob.value;
+
+    if (value === "") {
+        dobError.textContent = "Date of birth is required.";
+        dobError.style.display = "block";
+        return false;
+    }
+
+    const selectedDate = new Date(value + "T00:00:00");
+    const today = new Date();
+
+    const { minDOB, maxDOB } = getDateLimits();
+
+
+    /* Future date */
+    if (selectedDate > today) {
+
+        dobError.textContent =
+            "Date of birth cannot be in the future.";
+
+        dobError.style.display = "block";
+
+        return false;
+    }
+
+
+    /* Under 16 */
+    if (selectedDate > maxDOB) {
+
+        dobError.textContent =
+            "You must be at least 16 years old.";
+
+        dobError.style.display = "block";
+
+        return false;
+    }
+
+
+    /* Over 100 */
+    if (selectedDate < minDOB) {
+
+        dobError.textContent =
+            "Please enter a valid date of birth. Age cannot exceed 100 years.";
+
+        dobError.style.display = "block";
+
+        return false;
+    }
+
+
+    /* Valid DOB */
+    dobError.textContent = "";
+    dobError.style.display = "none";
+
+    return true;
+}
+
+
+/* Validate immediately when date changes */
+dob.addEventListener("change", function () {
+    validateDOB();
+});
+
+
+/* Validate when leaving the field */
+dob.addEventListener("blur", function () {
+    validateDOB();
+});
+
+/* =========================
+   SKILLS
+========================= */
+
+const skillSelect = document.getElementById("skillSelect");
+const selectedSkills = document.getElementById("selectedSkills");
+const skillsInput = document.getElementById("skillsInput");
+const otherSkillContainer = document.getElementById("otherSkillContainer");
+const otherSkillInput = document.getElementById("otherSkill");
+
+let skills = [];
+
+
+/* Load existing skills */
+const existingSkills = skillsInput.value
+    .split(",")
+    .map(skill => skill.trim())
+    .filter(skill => skill !== "");
+
+skills = [...new Set(existingSkills)];
+
+renderSkills();
+
+
+/* Skill selection */
+skillSelect.addEventListener("change", function () {
+
+    const skill = this.value;
+
+    if (!skill) {
+        return;
+    }
+
+    if (skill === "Other") {
+
+        otherSkillContainer.style.display = "flex";
+
+        this.value = "";
+
+        otherSkillInput.focus();
+
+        return;
+    }
+
+    addSkill(skill);
+
+    this.value = "";
+});
+
+
+/* Add predefined skill */
+function addSkill(skill) {
+
+    skill = skill.trim();
+
+    if (!skill) {
+        return;
+    }
+
+    if (!skills.includes(skill)) {
+        skills.push(skill);
+        renderSkills();
+    }
+}
+
+
+/* Add custom skill */
+function addOtherSkill() {
+
+    const skill = otherSkillInput.value.trim();
+
+    if (!skill) {
+        return;
+    }
+
+    addSkill(skill);
+
+    otherSkillInput.value = "";
+    otherSkillContainer.style.display = "none";
+}
+
+
+/* Allow Enter key */
+otherSkillInput.addEventListener("keydown", function (event) {
+
+    if (event.key === "Enter") {
+
+        event.preventDefault();
+
+        addOtherSkill();
+    }
+
+});
+
+
+/* Remove skill */
+function removeSkill(skill) {
+
+    skills = skills.filter(s => s !== skill);
+
+    renderSkills();
+}
+
+
+/* Display selected skills */
+function renderSkills() {
+
+    selectedSkills.innerHTML = "";
+
+    skills.forEach(skill => {
+
+        const tag = document.createElement("div");
+
+        tag.className = "skill-tag";
+
+        tag.innerHTML = `
+            <span>${skill}</span>
+            <button type="button" onclick="removeSkill('${skill.replace(/'/g, "\\'")}')">
+                ×
+            </button>
+        `;
+
+        selectedSkills.appendChild(tag);
+
+    });
+
+    skillsInput.value = skills.join(", ");
+}
+
 </script>
 </body>
 </html>
