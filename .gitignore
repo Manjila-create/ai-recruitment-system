@@ -221,10 +221,10 @@ __marimo__/
 # Ignore database files
 instance/*.db
 
-# Ignore uploaded files and static assets
-static/profile_pic/
-static/profile_pics/
-static/resumes/
+# Ignore uploaded user files
+/backend/static/profile_pic/
+/backend/static/profile_pics/
+/backend/static/resumes/
 
 .vscode/
 *.log
