@@ -13,7 +13,39 @@
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
 }
+.search-container{
+    margin-bottom:20px;
+    display:flex;
+    justify-content:flex-end;
+}
 
+.search-box{
+    width:320px;
+    padding:11px 15px;
+    border:1px solid #d1d5db;
+    border-radius:8px;
+    background:white;
+    color:#1f2937;
+    font-size:14px;
+    outline:none;
+    transition:.2s;
+}
+
+.search-box:focus{
+    border-color:#2563eb;
+    box-shadow:0 0 0 3px rgba(37,99,235,0.1);
+}
+
+.search-box::placeholder{
+    color:#9ca3af;
+}
+
+.no-results{
+    text-align:center;
+    padding:25px;
+    color:#6b7280;
+    display:none;
+}
 body {
   background: #f4f6f9;
   padding: 20px;
@@ -114,6 +146,16 @@ tr:hover {
   <button onclick="window.location.href='/admin'">Back</button>
 </div>
 
+<div class="search-container">
+    <input
+        type="text"
+        id="userSearch"
+        class="search-box"
+        placeholder="Search users by name or email..."
+        autocomplete="off"
+    >
+</div>
+
 <div class="table-box">
 <table>
   <thead>
@@ -126,7 +168,7 @@ tr:hover {
     </tr>
   </thead>
 
-  <tbody>
+  <tbody id="userTableBody">
     {% for user in users %}
     <tr>
 
@@ -159,6 +201,64 @@ tr:hover {
   </tbody>
 </table>
 </div>
+<script>
 
+const searchInput = document.getElementById("userSearch");
+const tableBody = document.getElementById("userTableBody");
+
+searchInput.addEventListener("input", function(){
+
+    const searchValue = this.value.toLowerCase().trim();
+
+    const rows = tableBody.querySelectorAll("tr");
+
+    let visibleUsers = 0;
+
+    rows.forEach(row => {
+
+        const name = row.cells[0]?.innerText.toLowerCase() || "";
+        const email = row.cells[1]?.innerText.toLowerCase() || "";
+
+        if(
+            name.includes(searchValue) ||
+            email.includes(searchValue)
+        ){
+            row.style.display = "";
+            visibleUsers++;
+        }else{
+            row.style.display = "none";
+        }
+
+    });
+
+    let noResults = document.getElementById("noResults");
+
+    if(visibleUsers === 0 && searchValue !== ""){
+
+        if(!noResults){
+
+            noResults = document.createElement("tr");
+            noResults.id = "noResults";
+
+            noResults.innerHTML = `
+                <td colspan="5" class="no-results">
+                    No users found matching "${searchValue}"
+                </td>
+            `;
+
+            tableBody.appendChild(noResults);
+        }
+
+        noResults.style.display = "table-row";
+
+    }else if(noResults){
+
+        noResults.style.display = "none";
+
+    }
+
+});
+
+</script>
 </body>
 </html>

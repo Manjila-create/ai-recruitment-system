@@ -14,7 +14,28 @@
     box-sizing:border-box;
     font-family:"Poppins",sans-serif;
 }
+.back-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:22px;
+    padding:9px 15px;
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:9px;
+    background:rgba(255,255,255,0.06);
+    color:rgba(255,255,255,0.8);
+    font-family:"Poppins",sans-serif;
+    font-size:13px;
+    font-weight:500;
+    cursor:pointer;
+    transition:0.25s ease;
+}
 
+.back-btn:hover{
+    background:rgba(255,255,255,0.1);
+    color:white;
+    transform:translateX(-3px);
+}
 body{
     background:#0b0f1a;
     color:white;
@@ -65,6 +86,11 @@ p{
 </head>
 
 <body>
+<body>
+
+<button type="button" class="back-btn" onclick="history.back()">
+    ← Back
+</button>
 
 <h1>Scheduled Interviews</h1>
 
