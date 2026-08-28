@@ -252,6 +252,13 @@ def register():
             "message": "Email is required"
         })
 
+    # Email must end with .com
+
+    if not re.match(r"^[^\s@]+@[^\s@]+\.com$", email, re.IGNORECASE):
+        return jsonify({
+            "success": False,
+            "message": "Email must be a valid .com address"
+        })
     # PASSWORD VALIDATION
     if len(password) < 6:
         return jsonify({

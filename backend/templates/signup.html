@@ -267,7 +267,7 @@ const emailError = document.getElementById("emailError");
 const passError = document.getElementById("passError");
 
 // regex
-const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const emailPattern = /^[^\s@]+@[^\s@]+\.com$/i;
 
 // ---------------- VALIDATION ----------------
 
@@ -289,10 +289,14 @@ function validateName(){
 }
 
 function validateEmail(){
+
   if(!emailPattern.test(emailInput.value.trim())){
-    emailError.textContent = "Enter a valid email address";
+
+    emailError.textContent = "Email must end with .com";
     return false;
+
   }
+
   emailError.textContent = "";
   return true;
 }

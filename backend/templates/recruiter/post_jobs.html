@@ -183,13 +183,7 @@ hr{
         <input name="company" placeholder="Company Name" required>
         <input name="location" placeholder="Location" required>
         <div class="salary-group">
-
-            <input
-                type="number"
-                id="salaryInput"
-                placeholder="Salary (NPR)"
-                min="1"
-                required>
+            <input type="number" id="salaryInput" placeholder="Salary (NPR)" min="100" step="1">
 
             <label class="checkbox">
                 <input type="checkbox" id="negotiable">
@@ -220,29 +214,51 @@ const form = document.querySelector("form");
 
 negotiable.addEventListener("change", () => {
 
-    salaryInput.disabled = negotiable.checked;
-    salaryInput.required = !negotiable.checked;
-
-    if(negotiable.checked){
+    if (negotiable.checked) {
+        salaryInput.disabled = true;
+        salaryInput.required = false;
         salaryInput.value = "";
+        hiddenSalary.value = "Negotiable";
+    } else {
+        salaryInput.disabled = false;
+        salaryInput.required = true;
+        hiddenSalary.value = "";
     }
 
 });
 
-form.addEventListener("submit",(e)=>{
+form.addEventListener("submit", (e) => {
 
-    if(negotiable.checked){
-        hiddenSalary.value="Negotiable";
-    }else{
-
-        if(Number(salaryInput.value)<=0){
-            alert("Salary must be greater than 0.");
-            e.preventDefault();
-            return;
-        }
-
-        hiddenSalary.value=salaryInput.value;
+    // Negotiable
+    if (negotiable.checked) {
+        hiddenSalary.value = "Negotiable";
+        return;
     }
+
+    // Get salary
+    const salary = salaryInput.value.trim();
+
+    // Empty salary
+    if (salary === "") {
+        e.preventDefault();
+        alert("Please enter a salary.");
+        salaryInput.focus();
+        return;
+    }
+
+    // Convert to number
+    const salaryNumber = Number(salary);
+
+    // Invalid, zero, or negative salary
+    if (!Number.isFinite(salaryNumber) || salaryNumber <= 0) {
+        e.preventDefault();
+        alert("Salary must be greater than 0.");
+        salaryInput.focus();
+        return;
+    }
+
+    // Valid salary
+    hiddenSalary.value = salaryNumber;
 
 });
 

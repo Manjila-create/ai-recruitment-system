@@ -145,6 +145,33 @@ textarea::placeholder{
     font-weight:600;
     transition:.3s;
 }
+.salary-group{
+    margin-bottom:20px;
+}
+
+.salary-group #salaryInput{
+    margin-bottom:10px;
+}
+
+.checkbox{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:20px;
+    cursor:pointer;
+}
+
+.checkbox input{
+    width:auto;
+    margin:0;
+    accent-color:#22c55e;
+    cursor:pointer;
+}
+
+.checkbox span{
+    font-size:14px;
+    color:#cbd5e1;
+}
 
 .cancel-btn:hover{
     background:#334155;
@@ -197,11 +224,28 @@ value="{{ job.location }}"
 required>
 
 <label>Salary</label>
-<input
-type="text"
-name="salary"
-value="{{ job.salary }}"
-required>
+
+<div class="salary-group">
+
+    <input type="number" id="salaryInput" placeholder="Salary (NPR)" min="100"
+        step="1"
+        {% if job.salary != "Negotiable" %}
+        value="{{ job.salary }}"
+        required
+        {% endif %}
+    >
+
+    <label class="checkbox">
+        <input type="checkbox" id="negotiable"
+            {% if job.salary == "Negotiable" %}checked{% endif %}
+        >
+        <span>Negotiable</span>
+    </label>
+
+    <input
+        type="hidden" name="salary" id="salaryHidden" value="{{ job.salary }}">
+
+</div>
 
 <label>Description</label>
 <textarea
@@ -220,12 +264,80 @@ Cancel
 </a>
 
 </div>
-
 </form>
+</div></div>
+<script>
 
-</div>
+const salaryInput = document.getElementById("salaryInput");
+const negotiable = document.getElementById("negotiable");
+const hiddenSalary = document.getElementById("salaryHidden");
+const form = document.querySelector("form");
 
-</div>
+// Handle existing "Negotiable" salary
+if (negotiable.checked) {
+    salaryInput.disabled = true;
+    salaryInput.required = false;
+    hiddenSalary.value = "Negotiable";
+}
 
+// Toggle Negotiable
+negotiable.addEventListener("change", () => {
+
+    if (negotiable.checked) {
+
+        salaryInput.disabled = true;
+        salaryInput.required = false;
+        salaryInput.value = "";
+
+        hiddenSalary.value = "Negotiable";
+
+    } else {
+
+        salaryInput.disabled = false;
+        salaryInput.required = true;
+
+        hiddenSalary.value = "";
+
+        salaryInput.focus();
+    }
+
+});
+
+form.addEventListener("submit", (e) => {
+
+    // Negotiable
+    if (negotiable.checked) {
+        hiddenSalary.value = "Negotiable";
+        return;
+    }
+
+    // Get salary
+    const salary = salaryInput.value.trim();
+
+    // Empty salary
+    if (salary === "") {
+        e.preventDefault();
+        alert("Please enter a salary.");
+        salaryInput.focus();
+        return;
+    }
+
+    // Convert to number
+    const salaryNumber = Number(salary);
+
+    // Invalid, zero, or negative salary
+    if (!Number.isFinite(salaryNumber) || salaryNumber <= 0) {
+        e.preventDefault();
+        alert("Salary must be greater than 0.");
+        salaryInput.focus();
+        return;
+    }
+
+    // Valid salary
+    hiddenSalary.value = salaryNumber;
+
+});
+
+</script>
 </body>
 </html>
